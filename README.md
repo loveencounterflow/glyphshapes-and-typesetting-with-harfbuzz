@@ -1,20 +1,23 @@
+
+
+
+# Glyphshapes and Typesetting with Harbuzz (and NodeJS &c)
+
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Glyphshapes and Typesetting with Harbuzz (and NodeJS &c)](#glyphshapes-and-typesetting-with-harbuzz-and-nodejs-c)
-  - [Debian Packages](#debian-packages)
-  - [Command Lines](#command-lines)
-    - [Short Descriptions](#short-descriptions)
-    - [Create SVG Files with Rendered Text on the Command Line(!)](#create-svg-files-with-rendered-text-on-the-command-line)
-    - [`hb-shape`](#hb-shape)
-  - [`hb-view`](#hb-view)
-  - [Links](#links)
+- [Debian Packages](#debian-packages)
+- [Command Lines](#command-lines)
+  - [Short Descriptions](#short-descriptions)
+  - [Create SVG Files with Rendered Text on the Command Line(!)](#create-svg-files-with-rendered-text-on-the-command-line)
+  - [`hb-shape`](#hb-shape)
+- [`hb-view`](#hb-view)
+- [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-# Glyphshapes and Typesetting with Harbuzz (and NodeJS &c)
 
 ## Debian Packages
 
