@@ -340,5 +340,14 @@ Application Options:
 * https://lfs-hk.koddos.net/blfs/view/systemd/general/harfbuzz.html has info about
   `hb-ot-shape-closure`, `hb-shape`, `hb-subset`, and `hb-view`
 
+* [*HarfBuzz OT+AAT "Unishaper"* by Behdad Esfahbod, Aug. 23,
+  2020](https://prezi.com/view/THNPJGFVDUCWoM20syev/)
+* [Homepage of Behdad Esfahbod, author of HarfBuzz](http://behdad.org/)
+* [Blog of Behdad Esfahbod](https://medium.com/@behdadesfahbod)
+* [*HarfBuzz* on Wikipedia](https://en.wikipedia.org/wiki/HarfBuzz)
+* [*HarfBuzz Manual*](https://harfbuzz.github.io/)
+* [`uharfbuzz` for Python/Cython](https://github.com/harfbuzz/uharfbuzz)
+* [*The journey of a word: how text ends up on a page* by Simon Cozens @ linux conf au
+  2017](https://www.youtube.com/watch?v=Is4PW6f4Pk4)
 
 
