@@ -1,7 +1,7 @@
 
 
 
-# Glyphshapes and Typesetting with Harbuzz (and NodeJS &c)
+# Glyphshapes and Typesetting with HarfBuzz (and NodeJS &c)
 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -21,13 +21,21 @@
 
 ## Debian Packages
 
+HarfBuzz packages with binaries:
+
+```sh
+libharfbuzz-bin
+```
+
+Other packages:
+
 ```sh
 libharfbuzz0b
 libharfbuzz-icu0
 libharfbuzz-gobject0
 libharfbuzz-dev
-libharfbuzz-bin
 ```
+
 
 ## Command Lines
 
