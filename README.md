@@ -14,7 +14,7 @@
 - [Command Lines](#command-lines)
   - [Short Descriptions](#short-descriptions)
   - [Create SVG Files with Rendered Text on the Command Line(!)](#create-svg-files-with-rendered-text-on-the-command-line)
-  - [`hb-shape`](#hb-shape)
+- [`hb-shape`](#hb-shape)
 - [`hb-view`](#hb-view)
 - [`hb-subset`](#hb-subset)
 - [`hb-ot-shape-closure`](#hb-ot-shape-closure)
@@ -127,7 +127,8 @@ hb-view --output-file=rendered.svg EBGaramond12-Regular.otf 'agffix'
                                                     888
                                                     888
  -->
-### `hb-shape`
+
+## `hb-shape`
 
 ```sh
 Usage:
