@@ -8,19 +8,61 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [`FTGL`](#ftgl)
+- [FontKit (NodeJS, Browser)](#fontkit-nodejs-browser)
+- [PyCairo](#pycairo)
 - [Install HarfBuzz](#install-harfbuzz)
   - [APT Packages (Would Not Recommend)](#apt-packages-would-not-recommend)
 - [Install HarfBuzz with Homebrew](#install-harfbuzz-with-homebrew)
 - [Command Lines](#command-lines)
+    - [Size](#size)
   - [Short Descriptions](#short-descriptions)
   - [Create SVG Files with Rendered Text on the Command Line(!)](#create-svg-files-with-rendered-text-on-the-command-line)
 - [`hb-shape`](#hb-shape)
 - [`hb-view`](#hb-view)
 - [`hb-subset`](#hb-subset)
 - [`hb-ot-shape-closure`](#hb-ot-shape-closure)
+- [HarfBuzzJS](#harfbuzzjs)
 - [Links](#links)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## `FTGL`
+
+```sh
+libftgl-dev
+libftgl2
+```
+
+???
+
+## FontKit (NodeJS, Browser)
+
+* [`fontkit`](https://github.com/foliojs/fontkit)
+
+* [`fontkit-next`](https://github.com/Hopding/fontkit)—used in
+  [`pdf-lib`](https://github.com/Hopding/pdf-lib) (see also [here](https://pdf-lib.js.org/#examples))
+  **NOTE** `pdf-lib` can draw SVG paths to PDF, so...
+
+* [`fonteditor-core`](https://github.com/kekee000/fonteditor-core)
+  * sfnt parse
+  * read, write, transform fonts
+    * ttf (read and write)
+    * woff (read and write)
+    * woff2 (read and write)
+    * eot (read and write)
+    * svg (read and write)
+    * otf (only read)
+  * ttf glyph adjust
+  * svg to glyph
+  * also see [`fonteditor` (在线字体编辑器)](https://github.com/ecomfe/fonteditor)
+
+
+## PyCairo
+
+https://pycairo.readthedocs.io/en/latest/reference/glyph.html
+
+
 
 ## Install HarfBuzz
 
@@ -86,6 +128,17 @@ dpkg --listfiles libharfbuzz-bin
 /usr/bin/hb-shape
 /usr/bin/hb-view
 ```
+
+#### Size
+
+```sh
+hb-view --annotate --output-file=rendered.svg --font-size=1000 EBGaramond12-Italic.otf 'abcabc'
+```
+
+Results in an SVG with glyphs whose design size is 1000 and whose coordinates are (apparently) all integers,
+which makes this a good choice for readability and post-processing.
+
+
 
 ### Short Descriptions
 
@@ -619,6 +672,18 @@ Application Options:
   --version                              Show version numbers
 ```
 
+## HarfBuzzJS
+
+Make sure you have the most recent `wasm-ld`; clone https://github.com/harfbuzz/harfbuzzjs` and build:
+
+```sh
+brew install llvm
+git clone https://github.com/harfbuzz/harfbuzzjs
+cd harfbuzzjs
+./build.sh
+```
+
+The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 
 
 ## Links
