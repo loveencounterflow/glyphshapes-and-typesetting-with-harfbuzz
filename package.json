@@ -1,0 +1,19 @@
+{
+  "name": "glyphshapes-and-typesetting-with-harbuzz",
+  "version": "0.0.0",
+  "description": "convert TTF, OTF fonts to SVG outlines, do text shaping (glyph selection, positioning) in JS",
+  "main": "lib/main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cnd": "^9.2.1",
+    "harfbuzzjs": "^0.1.3"
+  }
+}
