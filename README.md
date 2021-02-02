@@ -24,6 +24,7 @@
 - [`hb-ot-shape-closure`](#hb-ot-shape-closure)
 - [HarfBuzzJS](#harfbuzzjs)
 - [Links](#links)
+- [Tests and Benchmarks](#tests-and-benchmarks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -701,5 +702,30 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 * [`uharfbuzz` for Python/Cython](https://github.com/harfbuzz/uharfbuzz)
 * [*The journey of a word: how text ends up on a page* by Simon Cozens @ linux conf au
   2017](https://www.youtube.com/watch?v=Is4PW6f4Pk4)
+
+* Language bindings:
+  * https://github.com/rougier/freetype-py
+  * https://github.com/RazrFalcon/rustybuzz, A complete harfbuzz's shaping algorithm port to Rust
+  * https://github.com/foliojs/fontkit, An advanced font engine for Node and the browser
+
+## Tests and Benchmarks
+
+* implemented in `hengist`
+* tested libraries:
+  * [HarfBuzz](https://github.com/harfbuzz/harfbuzz) is considered the Gold Standard for correctness and the
+    Base Line for performance
+  * [HarfBuzzJS](https://github.com/harfbuzz/harfbuzzjs)
+    * apparently there are two variants, `harfbuzzjs/examples/nohbjs.html` and
+      `harfbuzzjs/examples/hbjs.example.html`
+    * see https://github.com/harfbuzz/harfbuzzjs/issues/10
+  * [opentype.js](https://github.com/opentypejs/opentype.js)
+  * [Fontkit](https://github.com/foliojs/fontkit)
+  * [TC39/ES Shaping module]()
+* test for
+  * glyf selection correctness
+  * OTF features
+  * performance
+  * outline matching
+
 
 
