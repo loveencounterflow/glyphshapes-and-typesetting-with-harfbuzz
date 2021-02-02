@@ -692,7 +692,6 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 
 * https://lfs-hk.koddos.net/blfs/view/systemd/general/harfbuzz.html has info about
   `hb-ot-shape-closure`, `hb-shape`, `hb-subset`, and `hb-view`
-
 * [*HarfBuzz OT+AAT "Unishaper"* by Behdad Esfahbod, Aug. 23,
   2020](https://prezi.com/view/THNPJGFVDUCWoM20syev/)
 * [Homepage of Behdad Esfahbod, author of HarfBuzz](http://behdad.org/)
@@ -702,7 +701,6 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 * [`uharfbuzz` for Python/Cython](https://github.com/harfbuzz/uharfbuzz)
 * [*The journey of a word: how text ends up on a page* by Simon Cozens @ linux conf au
   2017](https://www.youtube.com/watch?v=Is4PW6f4Pk4)
-
 * Language bindings:
   * https://github.com/rougier/freetype-py
   * https://github.com/RazrFalcon/rustybuzz, A complete harfbuzz's shaping algorithm port to Rust
@@ -710,7 +708,8 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 
 ## Tests and Benchmarks
 
-* relevant business logic code implemented in this repo, tests and benchmarks in [hengist]()
+* relevant business logic code implemented in this repo, tests and benchmarks in
+  [hengist](https://github.com/loveencounterflow/hengist/tree/master/dev/glyphshapes-and-typesetting-with-harfbuzz)
 * tested libraries:
   * [HarfBuzz](https://github.com/harfbuzz/harfbuzz) is considered the Gold Standard for correctness and the
     Base Line for performance
