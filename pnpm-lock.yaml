@@ -4,7 +4,7 @@ dependencies:
   harfbuzzjs: 0.1.3
   semver: 7.3.4
   shelljs: 0.8.4
-  steampipes: 6.4.0
+  steampipes: 6.6.0
 lockfileVersion: 5.2
 packages:
   /@uppy/fs-tail-stream/1.2.0:
@@ -41,17 +41,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-lNapdhUmwN0y94FGYvGubow+ZznI/A8+AlETPRli5+N4WkSnCys9Md1MiG8ZFPhjpS5Z+/NYC8nWdu+sLOOd/Q==
-  /datom/7.0.3:
-    dependencies:
-      cnd: 9.2.1
-      cupofjoe: 0.1.1
-      emittery: 0.6.0
-      intertype: 7.6.3
-      letsfreezethat: 2.2.5
-      multimix: 4.1.0
-    dev: false
-    resolution:
-      integrity: sha512-0t2/KrbaYkAzTCGexM8lS6dQkPuKjG2udpdRzrgWTHtOyK3TxWW1lGXfY18NK8SqZYCSJvjNPqKfGNfI4Msm2Q==
   /datom/8.0.0:
     dependencies:
       cnd: 9.2.1
@@ -117,6 +106,13 @@ packages:
       node: '>= 0.10'
     resolution:
       integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
+  /intertext-splitlines/1.2.0:
+    dependencies:
+      cnd: 9.2.1
+      intertype: 7.6.3
+    dev: false
+    resolution:
+      integrity: sha512-K88EL5l2F01CjSux+MZeKqOGNWAIKKYDPsetDB7WTvwLnT/EMgp/JXOjAJqhyFC2ji5vMYHKnbtM7vxS+iLoog==
   /intertype/7.6.3:
     dependencies:
       multimix: 5.0.0
@@ -129,10 +125,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-XRAfAdyyY5F5cOXn7hYQDqh2Xmii+DEfIcQGxK/uNwMHhIkPWO0g8msXcbzLe+MpGoR951MlqM/2iIlU4vKDdQ==
-  /letsfreezethat/2.2.5:
+  /jfee/0.1.3:
+    dependencies:
+      cnd: 9.2.1
+      intertype: 7.6.3
     dev: false
     resolution:
-      integrity: sha512-w4XD73ki7rClXBft9OmvngG6abnE71h0BTMNCCXdmDGI3zYNIZYjG6/fOhRjz1crWc5ic/XGKdl6KkusftiKpA==
+      integrity: sha512-TteheV7ceYKk1AVoU74tngE9vTAn1EtNhZD5tYWJmfT8JMc+wn0H4RYQl7kwsJ/yTWErvJcrtFMDeY0vpJWcUQ==
   /letsfreezethat/3.0.3:
     dev: false
     resolution:
@@ -212,17 +211,19 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-7gk3UZ9kOfPLIAbslLzyWeGiEqx9e3rxwZM0KE6EL8GlGwjym9Mrlx5/p33bWTu9YG6vcS4MBxYZDHYr5lr8BQ==
-  /steampipes/6.4.0:
+  /steampipes/6.6.0:
     dependencies:
       '@uppy/fs-tail-stream': 1.2.0
       cnd: 9.2.1
-      datom: 7.0.3
+      datom: 8.0.0
+      intertext-splitlines: 1.2.0
       intertype: 7.6.3
-      multimix: 4.1.0
+      jfee: 0.1.3
+      multimix: 5.0.0
       timsort: 0.3.0
     dev: false
     resolution:
-      integrity: sha512-7P2nlkEs+G5vDgQG0lysGtDKiSTwjtLbnorWNHHGJmY95XQfwuFru0QtmoafHtmA8JvgYtZmUickYvwVparWGg==
+      integrity: sha512-b1W7zDJ+sZPjI0+qxakPbLLuLlYByb/+HWPPmdAgNxsCz0H4RSHvFXLKhUKe6IsliJDMpy4ynjxzjyznUSDk/w==
   /timsort/0.3.0:
     dev: false
     resolution:
@@ -241,4 +242,4 @@ specifiers:
   harfbuzzjs: ^0.1.3
   semver: ^7.3.4
   shelljs: ^0.8.4
-  steampipes: ^6.4.0
+  steampipes: ^6.6.0
