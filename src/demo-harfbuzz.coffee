@@ -19,6 +19,16 @@ FS                        = require 'fs'
 PATH                      = require 'path'
 SEMVER                    = require 'semver'
 SHELL                     = require 'shelljs'
+SP                        = require 'steampipes'
+{ $
+  $async
+  $watch
+  $show
+  $drain }                = SP.export()
+DATOM                     = require 'datom'
+{ new_datom
+  freeze    }             = DATOM.export()
+{ spawn }                 = require 'child_process'
 
 
 #-----------------------------------------------------------------------------------------------------------
@@ -58,13 +68,55 @@ defaults =
     unless SEMVER.satisfies match.groups.version, defaults.harfbuzz.semver
       @_show_shell_output output
       throw new Error "^demo-harfbuzz@87^ found HarfBuzz #{rpr cmd} version #{rpr match.groups.version}, expected #{rpr defaults.harfbuzz.semver}"
+    #.......................................................................................................
     whisper "^33787^ #{cmd} version #{match.groups.version} OK" if defaults.verbose
   #.........................................................................................................
   return null
+
+#-----------------------------------------------------------------------------------------------------------
+@$extract_hbshape_positioning = ( S ) ->
+  return $ ( d, send ) ->
+    return null unless d.$key is '^stdout'
+    return null unless d.$value?
+    return null unless ( match = d.$value.match /^(?<lnr>[0-9]+):\s+(?<positions>\[.*\])$/ )?
+    send JSON.parse match.groups.positions
+
+
+#-----------------------------------------------------------------------------------------------------------
+### TAINT add styling, font features ###
+@shape_text = ( font_path, text ) -> new Promise ( resolve, reject ) =>
+  #.........................................................................................................
+  parameters    = [
+    '--output-format=json'
+    '--show-extents'
+    '--show-flags'
+    '--verbose'
+    font_path
+    text              ]
+  #.........................................................................................................
+  cp              = spawn 'hb-shape', parameters
+  stream_settings = { bare: true, }
+  source          = SP.source_from_child_process cp, stream_settings
+  S               = freeze { font_path, text, }
+  pipeline        = []
+  pipeline.push source
+  pipeline.push SP.$split_channels()
+  pipeline.push @$extract_hbshape_positioning S
+  pipeline.push $show()
+  pipeline.push $drain -> urge "shape_text finished"; resolve()
+  SP.pull pipeline...
+  #.........................................................................................................
+  return null
+
 
 
 ############################################################################################################
 if module is require.main then do =>
   HB = @
   HB.ensure_harfbuzz_version()
+  font_path = 'EBGaramond12-Italic.otf'
+  font_path = PATH.resolve PATH.join __dirname, '../fonts', font_path
+  text      = "glyph ffi shaping\nagffix谷"
+  await HB.shape_text font_path, text
+  # debug '^445^', ( k for k of SP ).sort()
 
