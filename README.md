@@ -709,7 +709,7 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 ## Tests and Benchmarks
 
 * relevant business logic code implemented in this repo, tests and benchmarks in
-  [hengist](https://github.com/loveencounterflow/hengist/tree/master/dev/glyphshapes-and-typesetting-with-harfbuzz)
+  [𐌷𐌴𐌽𐌲𐌹𐍃𐍄](https://github.com/loveencounterflow/hengist/tree/master/dev/glyphshapes-and-typesetting-with-harfbuzz)
 * tested libraries:
   * [HarfBuzz](https://github.com/harfbuzz/harfbuzz) is considered the Gold Standard for correctness and the
     Base Line for performance
