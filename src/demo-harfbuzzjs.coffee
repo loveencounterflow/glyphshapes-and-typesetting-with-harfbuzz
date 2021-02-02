@@ -24,8 +24,12 @@ warn CND.reverse "* harfbuzzjs doesn't have font feature switches (python versio
 # warn CND.reverse "this code has been moved to jzr/font-outlines-as-svg"
 # process.exit 1
 
+
+
 #-----------------------------------------------------------------------------------------------------------
-demo_text_shape = ( font_blob, text ) ->
+demo_text_shape = ( path, text ) ->
+  filename  = PATH.basename path
+  font_blob = new Uint8Array FS.readFileSync path
   blob      = HB.createBlob font_blob
   face      = HB.createFace blob, 0
   font      = HB.createFont face
@@ -41,7 +45,7 @@ demo_text_shape = ( font_blob, text ) ->
     features = { kern: true, liga: true, xxx: true, }
     HB.shape font, buffer, features
     R = buffer.json font
-    debug '^43242^', demo_outline font, R
+    demo_outline filename, font, R
     # bbox = xmin + ' ' + ymin + ' ' + width + ' ' + height;
     # "<svg xmlns='http://www.w3.org/2000/svg' height='128' viewBox='#{bbox}'>"
     # "<path d='#{svg_path}'/></svg>"
@@ -53,7 +57,7 @@ demo_text_shape = ( font_blob, text ) ->
   return R
 
 #-----------------------------------------------------------------------------------------------------------
-demo_outline = ( font, text_shape ) ->
+demo_outline = ( filename, font, text_shape ) ->
   cursor_x  = 0
   cursor_y  = 0
   R         = []
@@ -63,7 +67,7 @@ demo_outline = ( font, text_shape ) ->
     dx        = glyph.dx
     dy        = glyph.dy
     svg_path  = font.glyphToPath gid
-    debug '^3234234^', gid, rpr svg_path
+    debug '^3234234^', ( CND.yellow filename ), ( CND.lime gid ), ( CND.steel ( rpr svg_path )[ .. 100 ] )
     R.push svg_path
     # # You need to supply this bit
     # drawAGlyph(svg_path, cursor_x + dx, dy)
@@ -74,22 +78,32 @@ demo_outline = ( font, text_shape ) ->
 
 ############################################################################################################
 if module is require.main then do =>
-  f = ->
-    # path                = 'unifraktur/UnifrakturMaguntia16.ttf'
-    # path                = 'SourceHanSans-Bold003.ttf'
-    # path                = 'HanaMinExB.otf'
-    path                = 'FZKaiT.TTF'
-    # path                = 'EBGaramond08-Regular.otf'
-    path                = PATH.join __dirname, '../fonts', path
-    path                = PATH.resolve path
-    font_blob           = new Uint8Array FS.readFileSync path
-    # HB                  = await require 'harfbuzzjs'
-    HB                  = await require '../../../3rd-party-repos/harfbuzzjs'
-    # debug '^43435^', ( k for k of HB )
-    # text                = 'Just Text.做過很多'
-    text                = 'a'
-    for d in demo_text_shape font_blob, text
-      urge d
-    return null
-  await f()
+  HB            = await require '../../../3rd-party-repos/harfbuzzjs'
+  resolve_path  = ( path ) -> PATH.resolve PATH.join __dirname, '../fonts', path
+  # text          = 'Just Text.做過很多'
+  text          = 'abcdefABCDEF'
+  paths         = [
+    # 'unifraktur/UnifrakturMaguntia16.ttf'
+    # 'SourceHanSans-Bold003.ttf'
+    # # 'HanaMinExB.otf'
+    # 'FZKaiT.TTF'
+    # 'Ubuntu-R.ttf'
+    # 'DejaVuSansCondensed-Bold.ttf'
+    # 'NotoSerifJP/NotoSerifJP-Bold.otf'
+    # 'EBGaramond08-Italic.otf'
+    # 'EBGaramond08-Regular.otf'
+    # 'EBGaramond12-AllSC.otf'
+    # 'EBGaramond12-Italic.otf'
+    # 'EBGaramond12-Regular.otf'
+    # 'EBGaramond-InitialsF1.otf'
+    # 'EBGaramond-InitialsF2.otf'
+    # 'EBGaramond-Initials.otf'
+    'EBGaramondSC08-Regular.otf'
+    'EBGaramondSC12-Regular.otf'
+    ]
+  for path in paths
+    for d in demo_text_shape ( resolve_path path ), text
+      null
+      # urge d
+  return null
 
