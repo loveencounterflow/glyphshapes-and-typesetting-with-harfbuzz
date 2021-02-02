@@ -5,7 +5,7 @@
 ############################################################################################################
 CND                       = require 'cnd'
 rpr                       = CND.rpr
-badge                     = 'INTERPLOT/SCRATCH'
+badge                     = 'DEMO-HARFBUZZJS'
 debug                     = CND.get_logger 'debug',     badge
 alert                     = CND.get_logger 'alert',     badge
 whisper                   = CND.get_logger 'whisper',   badge
