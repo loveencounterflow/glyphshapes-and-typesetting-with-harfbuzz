@@ -719,7 +719,6 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
     * see https://github.com/harfbuzz/harfbuzzjs/issues/10
   * [opentype.js](https://github.com/opentypejs/opentype.js)
   * [Fontkit](https://github.com/foliojs/fontkit)
-  * [TC39/ES Shaping module]()
   * (future): generate interface to HarfBuzz using [`ffi-napi`](https://github.com/node-ffi-napi/node-ffi-napi)
     and call into C libraries from JS.—Also see
     * https://www.sysleaf.com/nodejs-ffi/
