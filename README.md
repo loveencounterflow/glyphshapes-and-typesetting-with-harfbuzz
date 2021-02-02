@@ -710,7 +710,7 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 
 ## Tests and Benchmarks
 
-* implemented in `hengist`
+* relevant business logic code implemented in this repo, tests and benchmarks in [hengist]()
 * tested libraries:
   * [HarfBuzz](https://github.com/harfbuzz/harfbuzz) is considered the Gold Standard for correctness and the
     Base Line for performance
