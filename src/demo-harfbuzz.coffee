@@ -101,11 +101,12 @@ types.declare 'hb_settings', tests:
 
 #-----------------------------------------------------------------------------------------------------------
 @$convert_shape_datoms = ( S ) ->
-  symbol_id     = null
+  symid         = null
   path_start    = '<path style="stroke:none;" d="'
   path_end      = ' "/>'
-  use_pattern   = /^\s*<use xlink:href="#(?<symbol_id>[^"]+)" x="(?<dx>[^"]+)" y="(?<dy>[^"]+)"\/>/
+  use_pattern   = /^\s*<use xlink:href="#(?<symid>[^"]+)" x="(?<dx>[^"]+)" y="(?<dy>[^"]+)"\/>/
   use_idx       = -1
+  #.........................................................................................................
   return $ ( d, send ) ->
     return null unless d.$key is '^stdout'
     return null unless ( value = d.$value )?
@@ -121,26 +122,27 @@ types.declare 'hb_settings', tests:
       return null
     #.......................................................................................................
     if value.startsWith '<symbol '
-      ### TAINT validate that symbol_id was found ###
-      symbol_id = value.replace /^.*\sid="([^"]+)".*$/, '$1'
+      ### TAINT validate that symid was found ###
+      symid = value.replace /^.*\sid="([^"]+)".*$/, '$1'
       return null
     #.......................................................................................................
     if value is '<path style="stroke:none;" d=""/>'
       # warn '^7767^', d
       # send new_datom '^space'
-      send new_datom '^glyfpath', { symbol_id, svgpath: null, gname: 'space', }
+      send new_datom '^glyfpath', { symid, glyfpath: null, glyfname: 'space', }
       return null
     #.......................................................................................................
     if ( value.startsWith path_start ) and ( value.endsWith path_end )
-      svgpath = value[ path_start.length ... value.length - path_end.length ]
-      send new_datom '^glyfpath', { symbol_id, svgpath, }
+      glyfpath = value[ path_start.length ... value.length - path_end.length ]
+      send new_datom '^glyfpath', { symid, glyfpath, }
       return null
     #.......................................................................................................
     if ( match = value.match use_pattern )?
       use_idx++
       data = match.groups
       if S.arrangement?
-        data.gname = S.arrangement[ use_idx ]?.g ? null
+        unless ( data.glyfname = S.arrangement[ use_idx ]?.g ? null )?
+          throw new Error "^demo-harfbuzz@87^ passed arrangement but use_idx #{use_idx} has no entry"
       send new_datom '^use', data
       return null
     #.......................................................................................................
@@ -148,9 +150,35 @@ types.declare 'hb_settings', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
+@$consolidate_shape_datoms = ( S ) ->
+  last            = Symbol 'last'
+  path_by_symid   = {}
+  R               = {}
+  #.........................................................................................................
+  return $ { last, }, ( d, send ) ->
+    if d is last
+      # whisper '^6667^', path_by_symid
+      return send R
+    #.......................................................................................................
+    # whisper '^784^', d
+    # whisper '^784^', ( k for k of path_by_symid )
+    switch d.$key
+      when '^glyfpath'
+        path_by_symid[ d.symid ] = d.glyfpath
+      when '^use'
+        return null unless ( glyfname = d.glyfname )?
+        unless ( glyfpath = path_by_symid[ d.symid ] )?
+          throw new Error "^demo-harfbuzz@87^ unable to locate glyfpath for glyfname #{glyfname}"
+        R[ glyfname ] = glyfpath
+      else
+        throw new Error "^demo-harfbuzz@87^ unexpected datom #{rpr d}"
+    return null
+
+#-----------------------------------------------------------------------------------------------------------
 @$show_positionings = ( S ) ->
   last      = Symbol 'last'
   count     = 0
+  #.........................................................................................................
   return $watch { last, }, ( d ) ->
     if d is last
       urge CND.reverse "found #{count} glyph positionings"
@@ -165,6 +193,7 @@ types.declare 'hb_settings', tests:
 @$show_usage_counts = ( S ) ->
   last      = Symbol 'last'
   count     = 0
+  #.........................................................................................................
   return $watch { last, }, ( d ) ->
     if d is last
       urge CND.reverse "found #{count} usage tags"
@@ -177,6 +206,7 @@ types.declare 'hb_settings', tests:
 @$show_svg = ( S ) ->
   last      = Symbol 'last'
   collector = []
+  #.........................................................................................................
   return $watch { last, }, ( d ) ->
     if d is last
       urge '\n' + collector.join '\n'
@@ -226,10 +256,10 @@ types.declare 'hb_settings', tests:
 @fetch_outlines = ( settings, arrangement = null ) ->
   settings      = { defaults.hb_settings..., settings..., }
   validate.hb_settings settings
-  return @_fetch_outlines settings, arrangement
+  return @fetch_outlines_fast settings, arrangement
 
 #-----------------------------------------------------------------------------------------------------------
-@_fetch_outlines = ( settings, arrangement = null ) -> new Promise ( resolve, reject ) =>
+@fetch_outlines_fast = ( settings, arrangement = null ) -> new Promise ( resolve, reject ) =>
   { text
     font_path
     features }  = settings
@@ -252,10 +282,11 @@ types.declare 'hb_settings', tests:
   pipeline.push source
   pipeline.push SP.$split_channels()
   # pipeline.push @$show_svg              S
-  pipeline.push @$convert_shape_datoms  S
+  pipeline.push @$convert_shape_datoms      S
+  pipeline.push @$show_usage_counts         S
+  pipeline.push @$consolidate_shape_datoms  S
   pipeline.push $show()
-  pipeline.push @$show_usage_counts     S
-  pipeline.push $drain -> urge "fetch_outlines finished"; resolve()
+  pipeline.push $drain ( R ) -> urge "fetch_outlines finished"; resolve R[ 0 ]
   SP.pull pipeline...
   #.........................................................................................................
   return null
@@ -273,8 +304,8 @@ if module is require.main then do =>
   text      = "AThctZ"
   features  = 'liga,clig,dlig,hlig'
   settings  = { font_path, text, features, }
-  help '^3334^', arrangement = await HB.arrange_text settings
   ### TAINT make arrangement part of settings? ###
-  await HB.fetch_outlines settings, arrangement
+  help '^3334^', arrangement  = await HB.arrange_text settings
+  help '^3335^', outlines     = await HB.fetch_outlines settings, arrangement
   # debug '^445^', ( k for k of SP ).sort()
 
