@@ -79,6 +79,7 @@ demo_outline = ( filename, font, text_shape ) ->
 ############################################################################################################
 if module is require.main then do =>
   HB            = await require '../../../3rd-party-repos/harfbuzzjs'
+  # result.instance.exports.memory.grow(400); // each page is 64kb in size
   resolve_path  = ( path ) -> PATH.resolve PATH.join __dirname, '../fonts', path
   # text          = 'Just Text.做過很多'
   text          = 'abcdefABCDEF'
