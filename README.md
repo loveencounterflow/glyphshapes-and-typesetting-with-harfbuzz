@@ -720,6 +720,11 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
   * [opentype.js](https://github.com/opentypejs/opentype.js)
   * [Fontkit](https://github.com/foliojs/fontkit)
   * [TC39/ES Shaping module]()
+  * (future): generate interface to HarfBuzz using [`ffi-napi`](https://github.com/node-ffi-napi/node-ffi-napi)
+    and call into C libraries from JS.—Also see
+    * https://www.sysleaf.com/nodejs-ffi/
+    * https://medium.com/@koistya/how-to-call-c-c-code-from-node-js-86a773033892
+    * https://medium.com/jspoint/a-simple-guide-to-load-c-c-code-into-node-js-javascript-applications-3fcccf54fd32
 * test for
   * glyf selection correctness
   * OTF features
