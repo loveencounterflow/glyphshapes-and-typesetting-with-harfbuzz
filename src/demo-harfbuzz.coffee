@@ -256,16 +256,17 @@ types.declare 'hb_settings', tests:
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT add styling, font features ###
 #-----------------------------------------------------------------------------------------------------------
-@fetch_outlines = ( settings, arrangement = null ) ->
+@fetch_outlines = ( settings ) ->
   settings      = { defaults.hb_settings..., settings..., }
   validate.hb_settings settings
-  return @fetch_outlines_fast settings, arrangement
+  return @fetch_outlines_fast settings
 
 #-----------------------------------------------------------------------------------------------------------
-@fetch_outlines_fast = ( settings, arrangement = null ) -> new Promise ( resolve, reject ) =>
+@fetch_outlines_fast = ( settings ) -> new Promise ( resolve, reject ) =>
   { text
     font_path
-    features }  = settings
+    features
+    arrangement } = settings
   #.........................................................................................................
   parameters    = []
   parameters.push '--output-format=svg'
@@ -298,17 +299,16 @@ types.declare 'hb_settings', tests:
 
 ############################################################################################################
 if module is require.main then do =>
-  HB = @
+  HB                    = @
   HB.ensure_harfbuzz_version()
-  font_path = 'EBGaramond12-Italic.otf'
-  font_path = PATH.resolve PATH.join __dirname, '../fonts', font_path
-  text      = "A glyph ffi shaping\nagffix谷"
-  text      = "A abc\nabc ffl ffi ct 谷 Z"
-  text      = "AThctZ"
-  features  = 'liga,clig,dlig,hlig'
-  settings  = { font_path, text, features, }
-  ### TAINT make arrangement part of settings? ###
-  help '^3334^', arrangement  = await HB.arrange_text settings
-  help '^3335^', outlines     = await HB.fetch_outlines settings, arrangement
+  font_path             = 'EBGaramond12-Italic.otf'
+  font_path             = PATH.resolve PATH.join __dirname, '../fonts', font_path
+  text                  = "A glyph ffi shaping\nagffix谷"
+  text                  = "A abc\nabc ffl ffi ct 谷 Z"
+  text                  = "AThctZ"
+  features              = 'liga,clig,dlig,hlig'
+  settings              = { font_path, text, features, }
+  settings.arrangement  = await HB.arrange_text settings
+  outlines              = await HB.fetch_outlines settings
   # debug '^445^', ( k for k of SP ).sort()
 
