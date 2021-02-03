@@ -696,7 +696,7 @@ syntactically more predictable than Glyf Names; the current thinking, however, i
 these are deemed to be more informative, more legible, and somewhat better standardized across fonts than
 Glyph IDs (which are always specific to a given font file and meaningless outside that context).
 
-* OpenType Glyf Names are rather restricted as per [the
+* Syntactically speaking, OpenType Glyf Names are rather restricted as per [the
   spec](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#2.f.i):
 
   > A glyph name may be up to 63 characters in length, must be entirely comprised of characters from the
@@ -731,10 +731,10 @@ Glyph IDs (which are always specific to a given font file and meaningless outsid
   errors in applications.*
 
 **Conclusion** OpenType Glyf Names are largely a subset of allowable XML IDs, with the sole exception of
-  `.notdef`. But since this value nor any of the more questionable ones like `---` and `:---:` caused
-  display errors in viewers or browsers tested, we will assume that **OpenType Glyf Names may be used as-is
-  in SVG ID attributes; no escaping need be done, and, assuming that reasonable fonts stick to the OT spec,
-  no validation will be needed either**.
+`.notdef`. But since this value nor any of the more questionable ones like `---` and `:---:` caused display
+errors in viewers or browsers tested, we will assume that **OpenType Glyf Names may be used as-is in SVG ID
+attributes; no escaping need be done, and, assuming that reasonable fonts stick to the OT spec, no
+validation will be needed either**.
 
 
 ## Links
