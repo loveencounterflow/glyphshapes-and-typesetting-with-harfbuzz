@@ -23,6 +23,7 @@
 - [`hb-subset`](#hb-subset)
 - [`hb-ot-shape-closure`](#hb-ot-shape-closure)
 - [HarfBuzzJS](#harfbuzzjs)
+- [OpenType Glyf Names and SVG Element IDs](#opentype-glyf-names-and-svg-element-ids)
 - [Links](#links)
 - [Tests and Benchmarks](#tests-and-benchmarks)
 
@@ -685,6 +686,42 @@ cd harfbuzzjs
 ```
 
 The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
+
+## OpenType Glyf Names and SVG Element IDs
+
+* OpenType Glyf Names are rather restricted as per [the
+  spec](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#2.f.i):
+
+  > A glyph name may be up to 63 characters in length, must be entirely comprised of characters from the
+  > following set:
+  >
+  >
+  >     ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  >     abcdefghijklmnopqrstuvwxyz
+  >     0123456789
+  >     .  # period
+  >     _  # underscore
+  >
+  > and must not start with a digit or period. The only exception is the special character “.notdef”.
+  >
+  > “twocents”, “a1”, and “\_” are valid glyph names. “2cents” and “.twocents” are not.
+
+* Likewise, per the [spec](https://svgwg.org/svg2-draft/struct.html#IDAttribute), allowable values for SVG Element IDs must be
+  valid [XML 1.0 Name Tokens](https://www.w3.org/TR/xml/#NT-Name), which are given as:
+
+  >     [4]     NameStartChar ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+  >     [4a]    NameChar      ::= NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+  >     [5]     Name          ::= NameStartChar (NameChar)*
+
+* Observe that in HTML5 (but not earlier versions), [most restrictions on ID values have been
+  removed](https://html.spec.whatwg.org/multipage/dom.html#the-id-attribute); to quote: "There are no other
+  restrictions on what form an ID can take; in particular, IDs can consist of just digits, start with a
+  digit, start with an underscore, consist of just punctuation, etc."
+
+
+
+
+
 
 
 ## Links
