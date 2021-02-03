@@ -1,17 +1,16 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+# Usage Notes for `hb-shape`, `hb-view`, `hb-subset`, and `hb-ot-shape-closure`
 
-- [Usage Notes for `hb-shape`, `hb-view`, `hb-subset`, and `hb-ot-shape-closure`](#usage-notes-for-hb-shape-hb-view-hb-subset-and-hb-ot-shape-closure)
-  - [`hb-shape`](#hb-shape)
-  - [`hb-view`](#hb-view)
-  - [`hb-subset`](#hb-subset)
-  - [`hb-ot-shape-closure`](#hb-ot-shape-closure)
+- [Examples](#examples)
+- [`hb-shape`](#hb-shape)
+- [`hb-view`](#hb-view)
+- [`hb-subset`](#hb-subset)
+- [`hb-ot-shape-closure`](#hb-ot-shape-closure)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-# Usage Notes for `hb-shape`, `hb-view`, `hb-subset`, and `hb-ot-shape-closure`
+## Examples
 
 ```sh
 hb-view --output-file=rendered.svg EBGaramond12-Regular.otf 'agffix'
