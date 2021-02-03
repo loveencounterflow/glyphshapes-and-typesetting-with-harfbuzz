@@ -8,6 +8,8 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
+- [What's a Font? What is Text Shaping?](#whats-a-font-what-is-text-shaping)
+- ['Glyphs' and 'Glyfs'](#glyphs-and-glyfs)
 - [`FTGL`](#ftgl)
 - [FontKit (NodeJS, Browser)](#fontkit-nodejs-browser)
 - [PyCairo](#pycairo)
@@ -21,6 +23,35 @@
 - [Tests and Benchmarks](#tests-and-benchmarks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## What's a Font? What is Text Shaping?
+
+* `Font = File + Features`
+* *not* your MS Word's concept of 'font'
+* *no* glyph substitution
+
+## 'Glyphs' and 'Glyfs'
+
+* **Glyph**—a general term
+* **Glyf**—specifically, the outline stored under a certain Gylf Name and Glyf ID (yes, everything is
+  doubly-indexed in the crazy world of fonts)
+* if you find it hard to distinguish (font) 'glyf' and (Unicode) 'glyph', substitute the two with
+  * *Glyf*: 'outline' (as in: a geometric shape, the figure to be drawn), and
+  * *Glyph*: 'codepoint' or 'character' (strictly speaking, these two are different, and different again from
+    'code unit' and, of course, 'byte')
+  * Notice all of these terms are somewhat related but categorically distinct from such terms as 'encoding',
+    'Unicode', 'UTF-8', and the scarily infelicitous 'charset' (which you should probably not use at all)
+* a font glyf may or may not directly correspond to a Unicode glyph (codepoint, character);
+* specifically, given a font and a codepoint, the font may have zero, one, or several glyfs (outlines) for
+  that codepoint.
+* Text shaping is the process of
+  * taking in a Font in the above sense—that is, a combination of a path (like
+    `my/fonts/Helvetica.otf`) and a set of OpenType features (given e.g. as a short snippet of text)—plus a
+    Unicode text (a string of Unicode codepoints, say, `'affiliate'`), and
+  * returning a set of geometrically positioned glyfs (outlines). The outlines may be just identified by
+    Glyf Names (or Glyf IDs, as the case may be), and / or be detailed as sets of curves (as usable in an
+    SVG vector image) or dots (as used in a PNG raster image).
+
 
 ## `FTGL`
 
