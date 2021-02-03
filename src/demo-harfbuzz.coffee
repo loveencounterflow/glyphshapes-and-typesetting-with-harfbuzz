@@ -46,6 +46,7 @@ defaults =
     font_path:    null
     text:         null
     features:     null
+    arrangement:  null
 
 #-----------------------------------------------------------------------------------------------------------
 types.declare 'hb_settings', tests:
@@ -53,7 +54,9 @@ types.declare 'hb_settings', tests:
   "x.font_path is a text":          ( x ) -> @isa.text            x.font_path
   "x.text is a text":               ( x ) -> @isa.text            x.text
   "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
-
+  "x.arrangement is an optional list of objects": ( x ) ->
+    return true unless x.arrangement?
+    return @isa_list_of.object x.arrangement
 
 #-----------------------------------------------------------------------------------------------------------
 @_show_shell_output = ( output ) ->
