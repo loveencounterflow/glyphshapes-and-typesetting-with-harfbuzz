@@ -3,6 +3,7 @@
 # Usage Notes for `hb-shape`, `hb-view`, `hb-subset`, and `hb-ot-shape-closure`
 
 - [Examples](#examples)
+- [The `font-size` Argument](#the-font-size-argument)
 - [`hb-shape`](#hb-shape)
 - [`hb-view`](#hb-view)
 - [`hb-subset`](#hb-subset)
@@ -13,8 +14,31 @@
 ## Examples
 
 ```sh
+hb-view DejaVuSansCondensed.ttf 'helo world'
+hb-view EBGaramond12-Regular.otf 'helo world'
+hb-view EBGaramond12-Regular.otf 'agffix'
 hb-view --output-file=rendered.svg EBGaramond12-Regular.otf 'agffix'
+hb-shape EBGaramond12-Regular.otf 'agffix'
+hb-shape --help-output
+hb-shape --output-format=text/json EBGaramond12-Regular.otf 'agffix'
+hb-shape --output-format=text/json EBGaramond12-Regular.otf 'agffix' | less
+hb-shape --help-output-syntax
+hb-shape --output-format=text/json --no-glyph-names EBGaramond12-Regular.otf 'agffix' | less
+hb-shape --output-format=text/json --no-glyph-names --verbose EBGaramond12-Regular.otf 'agffix' | less
+hb-shape --output-format=text/json --no-glyph-names --show-extents --verbose EBGaramond12-Regular.otf 'agffix' | less
+hb-shape --output-format=json --no-glyph-names --show-extents --verbose EBGaramond12-Regular.otf 'agffix' | less
 ```
+
+## The `font-size` Argument
+
+```sh
+hb-view --annotate --output-file=rendered.svg --font-size=1000 EBGaramond12-Italic.otf 'abcabc'
+```
+
+Results in an SVG with glyphs whose design size is 1000 and whose coordinates are (apparently) all integers,
+which makes this a good choice for readability and post-processing.
+
+
 
 <!--
 ############################################################################################################

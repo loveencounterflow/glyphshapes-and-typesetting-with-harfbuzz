@@ -11,12 +11,10 @@
 - [`FTGL`](#ftgl)
 - [FontKit (NodeJS, Browser)](#fontkit-nodejs-browser)
 - [PyCairo](#pycairo)
-- [Install HarfBuzz](#install-harfbuzz)
-  - [APT Packages (Would Not Recommend)](#apt-packages-would-not-recommend)
-- [Install HarfBuzz with Homebrew](#install-harfbuzz-with-homebrew)
-- [Command Lines](#command-lines)
-    - [Size](#size)
-  - [Short Descriptions](#short-descriptions)
+- [HarfBuzz](#harfbuzz)
+  - [Install HarfBuzz as APT Package (Would Not Recommend)](#install-harfbuzz-as-apt-package-would-not-recommend)
+- [Install HarfBuzz with Homebrew (Would Purchase Again)](#install-harfbuzz-with-homebrew-would-purchase-again)
+  - [Available HarfBuzz Command Line Tools](#available-harfbuzz-command-line-tools)
 - [HarfBuzzJS](#harfbuzzjs)
 - [OpenType Glyf Names and SVG Element IDs](#opentype-glyf-names-and-svg-element-ids)
 - [Links](#links)
@@ -61,9 +59,9 @@ https://pycairo.readthedocs.io/en/latest/reference/glyph.html
 
 
 
-## Install HarfBuzz
+## HarfBuzz
 
-### APT Packages (Would Not Recommend)
+### Install HarfBuzz as APT Package (Would Not Recommend)
 
 While there are fairly recent packages for HarfBuzz in APT, on my Linux Mint 19.3 machine (which is
 arguably a bit outdated as of January, 2021), all I get with `sudo apt install libharfbuzz-bin` is version
@@ -73,7 +71,7 @@ updates in the meantime.
 Sadly, this state of affairs is par of the course for the APT/DPKG (or whatcha may call it) ecosystem.
 Fortunately, there other options, for which see below.
 
-## Install HarfBuzz with Homebrew
+## Install HarfBuzz with Homebrew (Would Purchase Again)
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -95,49 +93,8 @@ This gives you the following executables; the version is 2.7.4 as of January, 20
 Observe there's even a new executable here, `hb-subset`, which isn't even included if you were to `sudo apt
 install libharfbuzz-bin`.
 
-## Command Lines
 
-```sh
-dpkg --listfiles libharfbuzz-bin
-less /usr/share/doc/libharfbuzz-bin
-man hb-shape
-hb-shape --help
-hb-view --help
-hb-view DejaVuSansCondensed.ttf 'helo world'
-hb-view EBGaramond12-Regular.otf 'helo world'
-hb-view EBGaramond12-Regular.otf 'agffix'
-hb-shape EBGaramond12-Regular.otf 'agffix'
-hb-shape --help-output
-hb-shape --output-format=text/json EBGaramond12-Regular.otf 'agffix'
-hb-shape --output-format=text/json EBGaramond12-Regular.otf 'agffix' | less
-hb-shape --help-output-syntax
-hb-shape --output-format=text/json --no-glyph-names EBGaramond12-Regular.otf 'agffix' | less
-hb-shape --output-format=text/json --no-glyph-names --verbose EBGaramond12-Regular.otf 'agffix' | less
-hb-shape --output-format=text/json --no-glyph-names --show-extents --verbose EBGaramond12-Regular.otf 'agffix' | less
-hb-shape --output-format=json --no-glyph-names --show-extents --verbose EBGaramond12-Regular.otf 'agffix' | less
-```
-
-
-
-```sh
-dpkg --listfiles libharfbuzz-bin
-/usr/bin/hb-ot-shape-closure
-/usr/bin/hb-shape
-/usr/bin/hb-view
-```
-
-#### Size
-
-```sh
-hb-view --annotate --output-file=rendered.svg --font-size=1000 EBGaramond12-Italic.otf 'abcabc'
-```
-
-Results in an SVG with glyphs whose design size is 1000 and whose coordinates are (apparently) all integers,
-which makes this a good choice for readability and post-processing.
-
-
-
-### Short Descriptions
+### Available HarfBuzz Command Line Tools
 
 
 * `hb-ot-shape-closure`—gives the set of characters contained in a string, represented as single characters
