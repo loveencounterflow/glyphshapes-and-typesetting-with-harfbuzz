@@ -719,10 +719,9 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
   digit, start with an underscore, consist of just punctuation, etc."
 
 * The [W3C Validator](https://validator.w3.org/) does indeed complain if an SVG document contains IDs such
-  as `---` or `:---:`;
-
-* however, Chromium and the Linux Mint Image Viewer seems to be unfazed and both display the SVG just fine.
-  *Do not use whitespace in IDs though, as these have been observed to cause errors in applications.*
+  as `---` or `:---:`; however, Chromium and the Linux Mint Image Viewer seems to be unfazed and both
+  display the SVG just fine. *Do not use whitespace in IDs though, as these have been observed to cause
+  errors in applications.*
 
 **Conclusion** OpenType Glyf Names are largely a subset of allowable XML IDs, with the sole exception of
   `.notdef`. But since this value nor any of the more questionable ones like `---` and `:---:` caused
