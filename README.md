@@ -22,6 +22,7 @@
 - [OpenType Glyf Names and SVG Element IDs](#opentype-glyf-names-and-svg-element-ids)
 - [Links](#links)
 - [Tests and Benchmarks](#tests-and-benchmarks)
+- [To Do](#to-do)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -283,6 +284,11 @@ validation will be needed either**.
   * OTF features
   * performance
   * outline matching
+
+## To Do
+
+* [ ] discuss OT font faces, adapt discussion of 'on font per file' policy
+* [ ] discuss HarfBuzz switch `--variations` vs switch `--features`
 
 
 
