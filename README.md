@@ -29,6 +29,25 @@
 * `Font = File + Features`
 * *not* your MS Word's concept of 'font'
 * *no* glyph substitution
+* we only talk about stretches of text that, when typeset, will share
+  * outlines from the same font file,
+  * with the same set of OpenType features,
+  * in the same nominal size,
+  * using the same language settings (which may affect handling of typographic details).
+* At a future point in time, this *might* get relaxed (read: made more complex) by allowing change of OT
+  features and/or language settings *within* a given contiguous stretch of text; however,
+* changing the font file within a stretch of text will always remain outside the purview of the present
+  document.
+* Of course, multilingual typesetting and typesetting with interspersed style changes (think italic, bold,
+  monospaced type) *necessitates* combining several fonts (in the above sense), and so does dealing with glyf
+  substitution (by which I mean fetching an outline from another source because your primary font does not
+  have one for a given character, or you want to get a replacement for aesthetic reasons).
+* Furthermore, typesetting justified text necessitates variations in the distances between individual words
+  (and sometimes letters).
+* None of the above two—dealing with multiple fonts or variable spacing between words—are dealt with in the
+  present document.
+* However, dealing with variable inter-character spacing *should* be part of this document; we will gloss
+  over this detail for the moment.
 
 ## 'Glyphs' and 'Glyfs'
 
