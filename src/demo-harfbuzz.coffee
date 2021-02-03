@@ -295,10 +295,8 @@ types.declare 'hb_settings', tests:
   #.........................................................................................................
   return null
 
-
-
-############################################################################################################
-if module is require.main then do =>
+#-----------------------------------------------------------------------------------------------------------
+@demo_arranging_and_outlining_text = ->
   HB                    = @
   HB.ensure_harfbuzz_version()
   font_path             = 'EBGaramond12-Italic.otf'
@@ -308,7 +306,20 @@ if module is require.main then do =>
   text                  = "AThctZ"
   features              = 'liga,clig,dlig,hlig'
   settings              = { font_path, text, features, }
-  settings.arrangement  = await HB.arrange_text settings
+  arrangement           = await HB.arrange_text settings
+  #.........................................................................................................
+  ### At this point we could check outline DB for missing outlines using the Glyf Names in `arrangement`.
+
+  If all outlines are found then we're fine to procede; in case one or more outlines are missing, we have to
+  typeset *the entire text* (unfortunately) again using `hb-view` with SVG output. We update `settings` with
+  `arrangement` because only then it is possible to match outlines and Glyph Names. ###
+  #.........................................................................................................
+  settings              = { settings..., arrangement, }
   outlines              = await HB.fetch_outlines settings
   # debug '^445^', ( k for k of SP ).sort()
+
+
+############################################################################################################
+if module is require.main then do =>
+  @demo_arranging_and_outlining_text()
 
