@@ -689,6 +689,13 @@ The above will produce `hb.wasm`, the HarfBuzz library as WebAssembly.
 
 ## OpenType Glyf Names and SVG Element IDs
 
+This section tries to answer the question whether any kind of processing / escaping /substitution should be
+performed on OpenType Glyf Names in order to make them usable as SVG Element IDs (needed to reference glyph
+outlines as SVG symbols). Previously it had been planned to use (numerical) Glyf IDs (GIDs) as these are
+syntactically more predictable than Glyf Names; the current thinking, however, is to prefer Glyf Names since
+these are deemed to be more informative, more legible, and somewhat better standardized across fonts than
+Glyph IDs (which are always specific to a given font file and meaningless outside that context).
+
 * OpenType Glyf Names are rather restricted as per [the
   spec](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#2.f.i):
 
