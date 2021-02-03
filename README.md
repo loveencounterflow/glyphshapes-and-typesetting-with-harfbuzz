@@ -13,7 +13,7 @@
 - [PyCairo](#pycairo)
 - [HarfBuzz](#harfbuzz)
   - [Install HarfBuzz as APT Package (Would Not Recommend)](#install-harfbuzz-as-apt-package-would-not-recommend)
-- [Install HarfBuzz with Homebrew (Would Purchase Again)](#install-harfbuzz-with-homebrew-would-purchase-again)
+  - [Install HarfBuzz with Homebrew (Would Purchase Again)](#install-harfbuzz-with-homebrew-would-purchase-again)
   - [Available HarfBuzz Command Line Tools](#available-harfbuzz-command-line-tools)
 - [HarfBuzzJS](#harfbuzzjs)
 - [OpenType Glyf Names and SVG Element IDs](#opentype-glyf-names-and-svg-element-ids)
@@ -71,7 +71,7 @@ updates in the meantime.
 Sadly, this state of affairs is par of the course for the APT/DPKG (or whatcha may call it) ecosystem.
 Fortunately, there other options, for which see below.
 
-## Install HarfBuzz with Homebrew (Would Purchase Again)
+### Install HarfBuzz with Homebrew (Would Purchase Again)
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
