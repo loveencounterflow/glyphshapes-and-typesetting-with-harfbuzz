@@ -18,6 +18,9 @@ echo                      = CND.echo.bind CND
 FS                        = require 'fs'
 PATH                      = require 'path'
 HB                        = null
+@types                    = require './types'
+{ isa
+  validate }              = @types.export()
 
 warn CND.reverse "* harfbuzzjs doesn't have font feature switches"
 # warn()
@@ -75,6 +78,16 @@ demo_outline = ( filename, font, text_shape ) ->
   return R
 
 
+#===========================================================================================================
+# HIGH-LEVEL API
+#-----------------------------------------------------------------------------------------------------------
+@shape_text = ( cfg ) ->
+  arrangement           = await @arrange_text cfg
+  cfg                   = { cfg..., arrangement, }
+  outlines              = await @fetch_outlines_fast cfg
+  return { arrangement, outlines, }
+
+
 
 ############################################################################################################
 if module is require.main then do =>
@@ -87,7 +100,7 @@ if module is require.main then do =>
     # 'unifraktur/UnifrakturMaguntia16.ttf'
     # 'SourceHanSans-Bold003.ttf'
     # # 'HanaMinExB.otf'
-    # 'FZKaiT.TTF'
+    'FZKaiT.TTF'
     # 'Ubuntu-R.ttf'
     # 'DejaVuSansCondensed-Bold.ttf'
     # 'NotoSerifJP/NotoSerifJP-Bold.otf'
@@ -99,8 +112,8 @@ if module is require.main then do =>
     # 'EBGaramond-InitialsF1.otf'
     # 'EBGaramond-InitialsF2.otf'
     # 'EBGaramond-Initials.otf'
-    'EBGaramondSC08-Regular.otf'
-    'EBGaramondSC12-Regular.otf'
+    # 'EBGaramondSC08-Regular.otf'
+    # 'EBGaramondSC12-Regular.otf'
     ]
   for path in paths
     for d in demo_text_shape ( resolve_path path ), text

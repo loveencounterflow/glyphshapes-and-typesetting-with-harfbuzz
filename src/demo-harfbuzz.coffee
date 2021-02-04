@@ -258,10 +258,12 @@ DATOM                     = require 'datom'
     font
     arrangement } = cfg
   #.........................................................................................................
+  ### TAINT code duplication ###
+  ### TAINT cache parameters, esp. features ###
   parameters    = []
   parameters.push '--output-format=svg'
   parameters.push '--font-size=1000'
-  parameters.push "--features=#{font.features}" if font.features?
+  parameters.push "--features=#{@_features_as_text font.features}" if font.features?
   parameters.push font.path
   parameters.push text
     # '--show-extents'
