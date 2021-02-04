@@ -28,7 +28,8 @@
 
 ## What is a 'Font'?
 
-* The **3F** formula: `Font = File + Features`
+* The **3F** formula: `Font = File + Features` **NOTE** possible to be changed to: **3F** formula: `Font =
+  File + Face + Features`
 * *not* your MS Word's concept of 'font'
 * *no* glyph substitution
 * *no* 'styles': think of it like in hot metal typesetting: when you have a stretch in upright Garamond with
@@ -287,7 +288,7 @@ validation will be needed either**.
 
 ## To Do
 
-* [ ] discuss OT font faces, adapt discussion of 'on font per file' policy
+* [ ] discuss OT font faces, adapt discussion of 'one font per file' policy
 * [ ] discuss HarfBuzz switch `--variations` vs switch `--features`
 
 
