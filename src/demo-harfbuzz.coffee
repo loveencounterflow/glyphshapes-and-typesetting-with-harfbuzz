@@ -34,12 +34,13 @@ types                     = new ( require 'intertype' ).Intertype()
   validate }              = types.export()
 
 
+
+#===========================================================================================================
+# CFG, TYPES
 #-----------------------------------------------------------------------------------------------------------
 defaults =
   internal:
-    verbose: true
-    shell:
-      verbose: false
+    verbose: false
     harfbuzz:
       semver: '^2.7.4'
   hb_cfg:
@@ -64,6 +65,9 @@ types.declare 'hb_font', tests:
   "x.path is a nonempty_text":      ( x ) -> @isa.nonempty_text   x.path
   "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
 
+
+#===========================================================================================================
+# ENSURE HARFBUZZ INSTALLED
 #-----------------------------------------------------------------------------------------------------------
 @_show_shell_output = ( output ) ->
   echo()
@@ -79,7 +83,7 @@ types.declare 'hb_font', tests:
     'hb-view' ]
   #.........................................................................................................
   for cmd in cmds
-    output = SHELL.exec "#{cmd} --version", { silent: ( not defaults.internal.shell.verbose ), }
+    output = SHELL.exec "#{cmd} --version", { silent: ( not defaults.internal.verbose ), }
     #.......................................................................................................
     unless output.code is 0
       @_show_shell_output output
@@ -98,6 +102,9 @@ types.declare 'hb_font', tests:
   #.........................................................................................................
   return null
 
+
+#===========================================================================================================
+# ARRANGEMENT
 #-----------------------------------------------------------------------------------------------------------
 @$extract_hbshape_positioning = ( cfg ) ->
   return $ ( d, send ) ->
@@ -199,32 +206,6 @@ types.declare 'hb_font', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$show_usage_counts = ( cfg ) ->
-  last      = Symbol 'last'
-  count     = 0
-  #.........................................................................................................
-  return $watch { last, }, ( d ) ->
-    if d is last
-      urge CND.reverse "found #{count} usage tags"
-      return null
-    return null unless d.$key is '^use'
-    count++
-    return null
-
-#-----------------------------------------------------------------------------------------------------------
-@$show_svg = ( cfg ) ->
-  last      = Symbol 'last'
-  collector = []
-  #.........................................................................................................
-  return $watch { last, }, ( d ) ->
-    if d is last
-      urge '\n' + collector.join '\n'
-      return null
-    return null unless d.$key is '^stdout'
-    return null unless ( value = d.$value )?
-    collector.push value
-
-#-----------------------------------------------------------------------------------------------------------
 ### TAINT add styling, font features ###
 @arrange_text = ( cfg ) -> new Promise ( resolve, reject ) =>
   cfg      = { defaults.hb_cfg..., cfg..., }
@@ -252,13 +233,44 @@ types.declare 'hb_font', tests:
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
-  pipeline.push $watch ( d ) => whisper '^33344^', d
+  ( pipeline.push $watch ( d ) => whisper '^33344^', d ) if defaults.internal.verbose
   pipeline.push @$extract_hbshape_positioning cfg
-  pipeline.push @$show_positionings           cfg
-  pipeline.push $drain ( R ) -> urge "arrange_text finished"; resolve R.flat Infinity
+  ( pipeline.push @$show_positionings           cfg ) if defaults.internal.verbose
+  pipeline.push $drain ( R ) ->
+    urge "arrange_text finished" if defaults.internal.verbose
+    resolve R.flat Infinity
   SP.pull pipeline...
   #.........................................................................................................
   return null
+
+
+#===========================================================================================================
+# FETCH OUTLINES
+#-----------------------------------------------------------------------------------------------------------
+@$show_usage_counts = ( cfg ) ->
+  last      = Symbol 'last'
+  count     = 0
+  #.........................................................................................................
+  return $watch { last, }, ( d ) ->
+    if d is last
+      urge CND.reverse "found #{count} usage tags"
+      return null
+    return null unless d.$key is '^use'
+    count++
+    return null
+
+# #-----------------------------------------------------------------------------------------------------------
+# @$show_svg = ( cfg ) ->
+#   last      = Symbol 'last'
+#   collector = []
+#   #.........................................................................................................
+#   return $watch { last, }, ( d ) ->
+#     if d is last
+#       urge '\n' + collector.join '\n'
+#       return null
+#     return null unless d.$key is '^stdout'
+#     return null unless ( value = d.$value )?
+#     collector.push value
 
 #-----------------------------------------------------------------------------------------------------------
 @fetch_outlines = ( cfg ) ->
@@ -288,16 +300,20 @@ types.declare 'hb_font', tests:
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
-  # pipeline.push @$show_svg              cfg
   pipeline.push @$convert_shape_datoms      cfg
-  pipeline.push @$show_usage_counts         cfg
+  ( pipeline.push @$show_usage_counts         cfg ) if defaults.internal.verbose
   pipeline.push @$consolidate_shape_datoms  cfg
-  pipeline.push $show()
-  pipeline.push $drain ( R ) -> urge "fetch_outlines finished"; resolve R[ 0 ]
+  ( pipeline.push $show() ) if defaults.internal.verbose
+  pipeline.push $drain ( R ) ->
+    urge "fetch_outlines finished" if defaults.internal.verbose
+    resolve R[ 0 ]
   SP.pull pipeline...
   #.........................................................................................................
   return null
 
+
+#===========================================================================================================
+# HIGH-LEVEL API
 #-----------------------------------------------------------------------------------------------------------
 @shape_text = ( cfg ) ->
   arrangement           = await @arrange_text cfg
@@ -305,6 +321,9 @@ types.declare 'hb_font', tests:
   outlines              = await @fetch_outlines_fast cfg
   return outlines
 
+
+#===========================================================================================================
+# DEMO
 #-----------------------------------------------------------------------------------------------------------
 @demo_arranging_and_outlining_text = ( cfg ) ->
   HB                    = @
@@ -328,10 +347,17 @@ types.declare 'hb_font', tests:
   #.........................................................................................................
   cfg                   = { cfg..., arrangement, }
   outlines              = await HB.fetch_outlines cfg
-  # debug '^445^', ( k for k of SP ).sort()
+  for d in arrangement
+    help d
+  for glyfname, outline of outlines
+    d = outline[ ... 100 ] + '…'
+    urge { glyfname, d, }
+  return null
 
 
 ############################################################################################################
 if module is require.main then do =>
   @demo_arranging_and_outlining_text()
+  # @ensure_harfbuzz_version()
+  # help await @shape_text { font: { path: '/home/flow/jzr/glyphshapes-and-typesetting-with-harfbuzz/fonts/EBGaramond12-Italic.otf', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
 
