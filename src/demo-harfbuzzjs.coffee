@@ -19,7 +19,7 @@ FS                        = require 'fs'
 PATH                      = require 'path'
 HB                        = null
 
-warn CND.reverse "* harfbuzzjs doesn't have font feature switches (python version has them)"
+warn CND.reverse "* harfbuzzjs doesn't have font feature switches"
 # warn()
 # warn CND.reverse "this code has been moved to jzr/font-outlines-as-svg"
 # process.exit 1
