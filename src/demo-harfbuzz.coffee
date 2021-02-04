@@ -71,8 +71,8 @@ types.declare 'hb_font', tests:
 #-----------------------------------------------------------------------------------------------------------
 @_show_shell_output = ( output ) ->
   echo()
-  help '^demo-harfbuzz@87^ stdout:', ( rpr output.stdout ) if output.stdout? and output.stdout.length > 0
-  warn '^demo-harfbuzz@87^ stderr:', ( rpr output.stderr ) if output.stderr? and output.stderr.length > 0
+  help '^demo-harfbuzz@100^ stdout:', ( rpr output.stdout ) if output.stdout? and output.stdout.length > 0
+  warn '^demo-harfbuzz@101^ stderr:', ( rpr output.stderr ) if output.stderr? and output.stderr.length > 0
   echo()
   return null
 
@@ -87,16 +87,16 @@ types.declare 'hb_font', tests:
     #.......................................................................................................
     unless output.code is 0
       @_show_shell_output output
-      throw new Error "^demo-harfbuzz@87^ ensure that harfbuzz is available on the path (recommendation: `homebrew install harfbuzz` on Linux, Mac)"
+      throw new Error "^demo-harfbuzz@102^ ensure that harfbuzz is available on the path (recommendation: `homebrew install harfbuzz` on Linux, Mac)"
     pattern = /// ^ #{cmd} \s+ \(HarfBuzz\) \s+ (?<version>[0-9a-z.]+) \n ///
     #.......................................................................................................
     unless ( match = output.stdout.match pattern )?
       @_show_shell_output output
-      throw new Error "^demo-harfbuzz@87^ ensure that harfbuzz is available on the path (recommendation: `homebrew install harfbuzz` on Linux, Mac)"
+      throw new Error "^demo-harfbuzz@103^ ensure that harfbuzz is available on the path (recommendation: `homebrew install harfbuzz` on Linux, Mac)"
     #.......................................................................................................
     unless SEMVER.satisfies match.groups.version, defaults.internal.harfbuzz.semver
       @_show_shell_output output
-      throw new Error "^demo-harfbuzz@87^ found HarfBuzz #{rpr cmd} version #{rpr match.groups.version}, expected #{rpr defaults.internal.harfbuzz.semver}"
+      throw new Error "^demo-harfbuzz@104^ found HarfBuzz #{rpr cmd} version #{rpr match.groups.version}, expected #{rpr defaults.internal.harfbuzz.semver}"
     #.......................................................................................................
     whisper "^33787^ #{cmd} version #{match.groups.version} OK" if defaults.internal.verbose
   #.........................................................................................................
@@ -143,9 +143,7 @@ types.declare 'hb_font', tests:
       return null
     #.......................................................................................................
     if value is '<path style="stroke:none;" d=""/>'
-      # warn '^7767^', d
-      # send new_datom '^space'
-      send new_datom '^glyfpath', { symid, glyfpath: null, glyfname: 'space', }
+      send new_datom '^glyfpath', { symid, glyfpath: '', glyfname: 'space', }
       return null
     #.......................................................................................................
     if ( value.startsWith path_start ) and ( value.endsWith path_end )
@@ -158,11 +156,11 @@ types.declare 'hb_font', tests:
       data = match.groups
       if cfg.arrangement?
         unless ( data.glyfname = cfg.arrangement[ use_idx ]?.g ? null )?
-          throw new Error "^demo-harfbuzz@87^ passed arrangement but use_idx #{use_idx} has no entry"
+          throw new Error "^demo-harfbuzz@105^ passed arrangement but use_idx #{use_idx} has no entry"
       send new_datom '^use', data
       return null
     #.......................................................................................................
-    throw new Error "^demo-harfbuzz@87^ unexpected SVG element #{rpr value}"
+    throw new Error "^demo-harfbuzz@106^ unexpected SVG element #{rpr value}"
     return null
 
 #-----------------------------------------------------------------------------------------------------------
@@ -184,10 +182,10 @@ types.declare 'hb_font', tests:
       when '^use'
         return null unless ( glyfname = d.glyfname )?
         unless ( glyfpath = path_by_symid[ d.symid ] )?
-          throw new Error "^demo-harfbuzz@87^ unable to locate glyfpath for glyfname #{glyfname}"
+          throw new Error "^demo-harfbuzz@107^ unable to locate glyfpath for glyfname #{glyfname}"
         R[ glyfname ] = glyfpath
       else
-        throw new Error "^demo-harfbuzz@87^ unexpected datom #{rpr d}"
+        throw new Error "^demo-harfbuzz@108^ unexpected datom #{rpr d}"
     return null
 
 #-----------------------------------------------------------------------------------------------------------
@@ -337,7 +335,7 @@ types.declare 'hb_font', tests:
   # text                  = "A glyph ffi shaping\nagffix谷"
   # text                  = "A abc\nabc ffl ffi ct 谷 Z"
   # text                  = "AThctZ"
-  text                  = "AxZ"
+  text                  = "A x Z"
   cfg                   = { font, text, }
   arrangement           = await HB.arrange_text cfg
   #.........................................................................................................
@@ -352,15 +350,14 @@ types.declare 'hb_font', tests:
   for d in arrangement
     help d
   for glyfname, outline of outlines
-    d = outline[ ... 100 ] + '…'
-    urge { glyfname, d, }
+    urge ( CND.pen { glyfname, d: outline, } ).trim()[ ... 100 ] + '…'
   return null
 
 
 ############################################################################################################
 if module is require.main then do =>
-  # @demo_arranging_and_outlining_text()
+  @demo_arranging_and_outlining_text()
   # @ensure_harfbuzz_version()
   # help await @shape_text { font: { path: '/home/flow/jzr/glyphshapes-and-typesetting-with-harfbuzz/fonts/EBGaramond12-Italic.otf', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
-  help await @shape_text { font: { path: 'nosuchfile', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
+  # help await @shape_text { font: { path: 'nosuchfile', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
 
