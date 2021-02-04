@@ -233,6 +233,7 @@ types.declare 'hb_font', tests:
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
+  pipeline.push SP.$select '^stderr', ( d ) -> reject new Error d.$value
   ( pipeline.push $watch ( d ) => whisper '^33344^', d ) if defaults.internal.verbose
   pipeline.push @$extract_hbshape_positioning cfg
   ( pipeline.push @$show_positionings           cfg ) if defaults.internal.verbose
@@ -300,6 +301,7 @@ types.declare 'hb_font', tests:
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
+  pipeline.push SP.$select '^stderr', ( d ) -> reject new Error d.$value
   pipeline.push @$convert_shape_datoms      cfg
   ( pipeline.push @$show_usage_counts         cfg ) if defaults.internal.verbose
   pipeline.push @$consolidate_shape_datoms  cfg
@@ -357,7 +359,8 @@ types.declare 'hb_font', tests:
 
 ############################################################################################################
 if module is require.main then do =>
-  @demo_arranging_and_outlining_text()
+  # @demo_arranging_and_outlining_text()
   # @ensure_harfbuzz_version()
   # help await @shape_text { font: { path: '/home/flow/jzr/glyphshapes-and-typesetting-with-harfbuzz/fonts/EBGaramond12-Italic.otf', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
+  help await @shape_text { font: { path: 'nosuchfile', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
 
