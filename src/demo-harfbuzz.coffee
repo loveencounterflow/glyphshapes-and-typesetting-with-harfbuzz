@@ -29,7 +29,7 @@ DATOM                     = require 'datom'
 { new_datom
   freeze    }             = DATOM.export()
 { spawn }                 = require 'child_process'
-@types                    = require './types'
+@types                    = require './__OLD__types'
 { isa
   validate
   type_of  }              = @types.export()
