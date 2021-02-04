@@ -42,21 +42,27 @@ defaults =
       verbose: false
     harfbuzz:
       semver: '^2.7.4'
-  hb_settings:
-    font_path:    null
+  hb_cfg:
+    font:
+      path:         null
+      features:     null
     text:         null
-    features:     null
     arrangement:  null
 
 #-----------------------------------------------------------------------------------------------------------
-types.declare 'hb_settings', tests:
+types.declare 'hb_cfg', tests:
   "x is an object":                 ( x ) -> @isa.object          x
-  "x.font_path is a text":          ( x ) -> @isa.text            x.font_path
   "x.text is a text":               ( x ) -> @isa.text            x.text
-  "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
+  "x.font is a hb_font":            ( x ) -> @isa.hb_font         x.font
   "x.arrangement is an optional list of objects": ( x ) ->
     return true unless x.arrangement?
     return @isa_list_of.object x.arrangement
+
+#-----------------------------------------------------------------------------------------------------------
+types.declare 'hb_font', tests:
+  "x is an object":                 ( x ) -> @isa.object          x
+  "x.path is a nonempty_text":      ( x ) -> @isa.nonempty_text   x.path
+  "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
 
 #-----------------------------------------------------------------------------------------------------------
 @_show_shell_output = ( output ) ->
@@ -93,7 +99,7 @@ types.declare 'hb_settings', tests:
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$extract_hbshape_positioning = ( S ) ->
+@$extract_hbshape_positioning = ( cfg ) ->
   return $ ( d, send ) ->
     return null unless d.$key is '^stdout'
     return null unless d.$value?
@@ -103,7 +109,7 @@ types.declare 'hb_settings', tests:
     send JSON.parse match.groups.positions
 
 #-----------------------------------------------------------------------------------------------------------
-@$convert_shape_datoms = ( S ) ->
+@$convert_shape_datoms = ( cfg ) ->
   symid         = null
   path_start    = '<path style="stroke:none;" d="'
   path_end      = ' "/>'
@@ -143,8 +149,8 @@ types.declare 'hb_settings', tests:
     if ( match = value.match use_pattern )?
       use_idx++
       data = match.groups
-      if S.arrangement?
-        unless ( data.glyfname = S.arrangement[ use_idx ]?.g ? null )?
+      if cfg.arrangement?
+        unless ( data.glyfname = cfg.arrangement[ use_idx ]?.g ? null )?
           throw new Error "^demo-harfbuzz@87^ passed arrangement but use_idx #{use_idx} has no entry"
       send new_datom '^use', data
       return null
@@ -153,7 +159,7 @@ types.declare 'hb_settings', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$consolidate_shape_datoms = ( S ) ->
+@$consolidate_shape_datoms = ( cfg ) ->
   last            = Symbol 'last'
   path_by_symid   = {}
   R               = {}
@@ -178,7 +184,7 @@ types.declare 'hb_settings', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$show_positionings = ( S ) ->
+@$show_positionings = ( cfg ) ->
   last      = Symbol 'last'
   count     = 0
   #.........................................................................................................
@@ -193,7 +199,7 @@ types.declare 'hb_settings', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$show_usage_counts = ( S ) ->
+@$show_usage_counts = ( cfg ) ->
   last      = Symbol 'last'
   count     = 0
   #.........................................................................................................
@@ -206,7 +212,7 @@ types.declare 'hb_settings', tests:
     return null
 
 #-----------------------------------------------------------------------------------------------------------
-@$show_svg = ( S ) ->
+@$show_svg = ( cfg ) ->
   last      = Symbol 'last'
   collector = []
   #.........................................................................................................
@@ -220,59 +226,57 @@ types.declare 'hb_settings', tests:
 
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT add styling, font features ###
-@arrange_text = ( settings ) -> new Promise ( resolve, reject ) =>
-  settings      = { defaults.hb_settings..., settings..., }
-  validate.hb_settings settings
+@arrange_text = ( cfg ) -> new Promise ( resolve, reject ) =>
+  cfg      = { defaults.hb_cfg..., cfg..., }
+  validate.hb_cfg cfg
   { text
-    font_path
-    features }  = settings
+    font      } = cfg
+  { path
+    features }  = font
   #.........................................................................................................
+  ### TAINT code duplication ###
   parameters    = []
   parameters.push '--output-format=json'
   parameters.push '--font-size=1000'
-  parameters.push "--features=#{features}" if features?
+  parameters.push "--features=#{font.features}" if font.features?
     # '--no-glyph-names' ### NOTE when active, output glyf IDs instead of glyph names ###
     # '--show-extents'
     # '--show-flags'
     # '--verbose'
-  parameters.push font_path
+  parameters.push font.path
   parameters.push text
   #.........................................................................................................
   cp              = spawn 'hb-shape', parameters
   stream_settings = { bare: true, }
   source          = SP.source_from_child_process cp, stream_settings
-  S               = freeze { font_path, text, }
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
   pipeline.push $watch ( d ) => whisper '^33344^', d
-  pipeline.push @$extract_hbshape_positioning S
-  pipeline.push @$show_positionings           S
+  pipeline.push @$extract_hbshape_positioning cfg
+  pipeline.push @$show_positionings           cfg
   pipeline.push $drain ( R ) -> urge "arrange_text finished"; resolve R.flat Infinity
   SP.pull pipeline...
   #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-### TAINT add styling, font features ###
-#-----------------------------------------------------------------------------------------------------------
-@fetch_outlines = ( settings ) ->
-  settings      = { defaults.hb_settings..., settings..., }
-  validate.hb_settings settings
-  return @fetch_outlines_fast settings
+@fetch_outlines = ( cfg ) ->
+  cfg      = { defaults.hb_cfg..., cfg..., }
+  validate.hb_cfg cfg
+  return @fetch_outlines_fast cfg
 
 #-----------------------------------------------------------------------------------------------------------
-@fetch_outlines_fast = ( settings ) -> new Promise ( resolve, reject ) =>
+@fetch_outlines_fast = ( cfg ) -> new Promise ( resolve, reject ) =>
   { text
-    font_path
-    features
-    arrangement } = settings
+    font
+    arrangement } = cfg
   #.........................................................................................................
   parameters    = []
   parameters.push '--output-format=svg'
   parameters.push '--font-size=1000'
-  parameters.push "--features=#{features}" if features?
-  parameters.push font_path
+  parameters.push "--features=#{font.features}" if font.features?
+  parameters.push font.path
   parameters.push text
     # '--show-extents'
     # '--show-flags'
@@ -281,14 +285,13 @@ types.declare 'hb_settings', tests:
   cp              = spawn 'hb-view', parameters
   stream_settings = { bare: true, }
   source          = SP.source_from_child_process cp, stream_settings
-  S               = freeze { font_path, text, arrangement, }
   pipeline        = []
   pipeline.push source
   pipeline.push SP.$split_channels()
-  # pipeline.push @$show_svg              S
-  pipeline.push @$convert_shape_datoms      S
-  pipeline.push @$show_usage_counts         S
-  pipeline.push @$consolidate_shape_datoms  S
+  # pipeline.push @$show_svg              cfg
+  pipeline.push @$convert_shape_datoms      cfg
+  pipeline.push @$show_usage_counts         cfg
+  pipeline.push @$consolidate_shape_datoms  cfg
   pipeline.push $show()
   pipeline.push $drain ( R ) -> urge "fetch_outlines finished"; resolve R[ 0 ]
   SP.pull pipeline...
@@ -296,26 +299,35 @@ types.declare 'hb_settings', tests:
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@demo_arranging_and_outlining_text = ->
+@shape_text = ( cfg ) ->
+  arrangement           = await @arrange_text cfg
+  cfg                   = { cfg..., arrangement, }
+  outlines              = await @fetch_outlines_fast cfg
+  return outlines
+
+#-----------------------------------------------------------------------------------------------------------
+@demo_arranging_and_outlining_text = ( cfg ) ->
   HB                    = @
   HB.ensure_harfbuzz_version()
-  font_path             = 'EBGaramond12-Italic.otf'
-  font_path             = PATH.resolve PATH.join __dirname, '../fonts', font_path
-  text                  = "A glyph ffi shaping\nagffix谷"
-  text                  = "A abc\nabc ffl ffi ct 谷 Z"
-  text                  = "AThctZ"
-  features              = 'liga,clig,dlig,hlig'
-  settings              = { font_path, text, features, }
-  arrangement           = await HB.arrange_text settings
+  font                  =
+    path:                 'EBGaramond12-Italic.otf'
+    features:             'liga,clig,dlig,hlig'
+  font.path             = PATH.resolve PATH.join __dirname, '../fonts', font.path
+  # text                  = "A glyph ffi shaping\nagffix谷"
+  # text                  = "A abc\nabc ffl ffi ct 谷 Z"
+  # text                  = "AThctZ"
+  text                  = "AxZ"
+  cfg                   = { font, text, }
+  arrangement           = await HB.arrange_text cfg
   #.........................................................................................................
   ### At this point we could check outline DB for missing outlines using the Glyf Names in `arrangement`.
 
   If all outlines are found then we're fine to procede; in case one or more outlines are missing, we have to
-  typeset *the entire text* (unfortunately) again using `hb-view` with SVG output. We update `settings` with
+  typeset *the entire text* (unfortunately) again using `hb-view` with SVG output. We update `cfg` with
   `arrangement` because only then it is possible to match outlines and Glyph Names. ###
   #.........................................................................................................
-  settings              = { settings..., arrangement, }
-  outlines              = await HB.fetch_outlines settings
+  cfg                   = { cfg..., arrangement, }
+  outlines              = await HB.fetch_outlines cfg
   # debug '^445^', ( k for k of SP ).sort()
 
 
