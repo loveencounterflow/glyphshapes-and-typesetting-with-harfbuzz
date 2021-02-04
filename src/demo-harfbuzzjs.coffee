@@ -93,30 +93,29 @@ __demo_text_shape = ( path, text ) ->
 
 #===========================================================================================================
 # ARRANGE
-#-----------------------------------------------------------------------------------------------------------
-@add_missing_outlines = ( me ) ->
-  HBJS               ?= await require harfbuzzjs_path
-  me.cache.hbjs      ?= @_hbjs_cache_from_path HBJS, me.path
-  { hbjs }            = me.cache
-  { features }        = me
-  me.outlines        ?= {}
-  #.........................................................................................................
-  # cursor_x  = 0
-  # cursor_y  = 0
-  R         = {}
-  for glyph in me.arrangement
-    gid       = glyph.g
-    # delta_x   = glyph.ax
-    # dx        = glyph.dx
-    # dy        = glyph.dy
-    svg_path  = hbjs.hbjsfont.glyphToPath gid
-    debug '^3234234^', ( CND.lime gid ), ( CND.steel ( rpr svg_path )[ .. 100 ] )
-    # R.push svg_path
-    # # You need to supply this bit
-    # drawAGlyph(svg_path, cursor_x + dx, dy)
-    # cursor_x += delta_x
-  #.........................................................................................................
-  return null
+# #-----------------------------------------------------------------------------------------------------------
+# @add_missing_outlines = ( me ) ->
+#   HBJS               ?= await require harfbuzzjs_path
+#   me.cache.hbjs      ?= @_hbjs_cache_from_path HBJS, me.path
+#   { hbjs }            = me.cache
+#   { features }        = me
+#   me.outlines        ?= {}
+#   #.........................................................................................................
+#   # cursor_x  = 0
+#   # cursor_y  = 0
+#   R         = {}
+#     gid       = glyph.g
+#     # delta_x   = glyph.ax
+#     # dx        = glyph.dx
+#     # dy        = glyph.dy
+#     svg_path  = hbjs.hbjsfont.glyphToPath gid
+#     debug '^3234234^', ( CND.lime gid ), ( CND.steel ( rpr svg_path )[ .. 100 ] )
+#     # R.push svg_path
+#     # # You need to supply this bit
+#     # drawAGlyph(svg_path, cursor_x + dx, dy)
+#     # cursor_x += delta_x
+#   #.........................................................................................................
+#   return null
 
 
 #===========================================================================================================
@@ -128,6 +127,10 @@ __demo_text_shape = ( path, text ) ->
   me.cache.hbjs      ?= @_hbjs_cache_from_path HBJS, me.path
   { hbjs }            = me.cache
   { features }        = me
+  # debug '^333489^', ( k for k of HBJS )
+  # debug '^333489^', ( k for k of hbjs.hbjsfont )
+  # debug '^333489^', ( k for k of hbjs.buffer )
+  me.outlines        ?= {}
   #.........................................................................................................
   ### TAINT can we keep existing buffer for new text? ###
   hbjs.buffer = HBJS.createBuffer()
@@ -136,7 +139,9 @@ __demo_text_shape = ( path, text ) ->
   HBJS.shape hbjs.hbjsfont, hbjs.buffer, features
   ### NOTE may change to arrangements as list ###
   me.arrangement = hbjs.buffer.json hbjs.hbjsfont
-  # demo_outline filename, hbjs.hbjsfont, arrangement
+  #.........................................................................................................
+  for glyph in me.arrangement
+    me.outlines[ glyph.g ] ?= hbjs.hbjsfont.glyphToPath glyph.g
   #.........................................................................................................
   return null
 
@@ -165,7 +170,7 @@ __demo_text_shape = ( path, text ) ->
 #-----------------------------------------------------------------------------------------------------------
 @fast_shape_text = ( me, text ) ->
   await @arrange_text         me, text
-  await @add_missing_outlines me
+  # await @add_missing_outlines me
   return null
 
 
@@ -206,6 +211,8 @@ __demo_text_shape = ( path, text ) ->
       await HB.shape_text fs, text
       for d in fs.arrangement
         urge d
+      for gid, outline of fs.outlines
+        debug '^3234234^', ( CND.lime gid ), ( CND.steel ( rpr outline )[ .. 100 ] )
     finally
       # debug '^333322^', fs
       HB.destruct fs
