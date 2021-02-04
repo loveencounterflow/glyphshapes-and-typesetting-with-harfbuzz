@@ -319,7 +319,7 @@ types.declare 'hb_font', tests:
   arrangement           = await @arrange_text cfg
   cfg                   = { cfg..., arrangement, }
   outlines              = await @fetch_outlines_fast cfg
-  return outlines
+  return { arrangement, outlines, }
 
 
 #===========================================================================================================
