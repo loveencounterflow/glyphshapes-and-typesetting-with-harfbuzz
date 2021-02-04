@@ -17,50 +17,18 @@ echo                      = CND.echo.bind CND
 #...........................................................................................................
 FS                        = require 'fs'
 PATH                      = require 'path'
-HB                        = null
 @types                    = require './types'
 { isa
   validate }              = @types.export()
+HBJS                        = null
+harfbuzzjs_path           = '../../../3rd-party-repos/harfbuzzjs'
 
-warn CND.reverse "* harfbuzzjs doesn't have font feature switches"
-# warn()
-# warn CND.reverse "this code has been moved to jzr/font-outlines-as-svg"
-# process.exit 1
-
+warn CND.reverse "harfbuzzjs doesn't support font features"
 
 
 #-----------------------------------------------------------------------------------------------------------
-demo_text_shape = ( path, text ) ->
-  filename  = PATH.basename path
-  font_blob = new Uint8Array FS.readFileSync path
-  blob      = HB.createBlob font_blob
-  face      = HB.createFace blob, 0
-  font      = HB.createFont face
-  ### NOTE Units per em. Optional; taken from font if not given ###
-  font.setScale 1000, 1000
-  buffer    = HB.createBuffer()
-  try
-    buffer.addText text
-    buffer.guessSegmentProperties()
-    ### NOTE optional as can be set by guessSegmentProperties also: ###
-    # buffer.setDirection 'ltr'
-    ### TAINT silently discards unknown features ###
-    features = { kern: true, liga: true, xxx: true, }
-    HB.shape font, buffer, features
-    R = buffer.json font
-    demo_outline filename, font, R
-    # bbox = xmin + ' ' + ymin + ' ' + width + ' ' + height;
-    # "<svg xmlns='http://www.w3.org/2000/svg' height='128' viewBox='#{bbox}'>"
-    # "<path d='#{svg_path}'/></svg>"
-  finally
-    buffer.destroy()
-    font.destroy()
-    face.destroy()
-    blob.destroy()
-  return R
-
-#-----------------------------------------------------------------------------------------------------------
-demo_outline = ( filename, font, text_shape ) ->
+__demo_outline = ( filename, font, text_shape ) ->
+  HBJS       ?= await require harfbuzzjs_path
   cursor_x  = 0
   cursor_y  = 0
   R         = []
@@ -77,24 +45,138 @@ demo_outline = ( filename, font, text_shape ) ->
     cursor_x += delta_x
   return R
 
+#-----------------------------------------------------------------------------------------------------------
+__demo_text_shape = ( path, text ) ->
+  HBJS       ?= await require harfbuzzjs_path
+  filename  = PATH.basename path
+  font_blob = new Uint8Array FS.readFileSync path
+  blob      = HBJS.createBlob font_blob
+  face      = HBJS.createFace blob, 0
+  font      = HBJS.createFont face
+  ### NOTE Units per em. Optional; taken from font if not given ###
+  font.setScale 1000, 1000
+  buffer    = HBJS.createBuffer()
+  try
+    buffer.addText text
+    buffer.guessSegmentProperties()
+    ### NOTE optional as can be set by guessSegmentProperties also: ###
+    # buffer.setDirection 'ltr'
+    ### TAINT silently discards unknown features ###
+    features = { kern: true, liga: true, xxx: true, }
+    HBJS.shape font, buffer, features
+    R = buffer.json font
+    demo_outline filename, font, R
+    # bbox = xmin + ' ' + ymin + ' ' + width + ' ' + height;
+    # "<svg xmlns='http://www.w3.org/2000/svg' height='128' viewBox='#{bbox}'>"
+    # "<path d='#{svg_path}'/></svg>"
+  finally
+    buffer.destroy()
+    font.destroy()
+    face.destroy()
+    blob.destroy()
+  return R
+
+
+
+#===========================================================================================================
+# HELPERS
+#-----------------------------------------------------------------------------------------------------------
+@_hbjs_cache_from_path = ( HBJS, path ) ->
+  font_blob = new Uint8Array FS.readFileSync path
+  blob      = HBJS.createBlob font_blob
+  face      = HBJS.createFace blob, 0
+  hbjsfont  = HBJS.createFont face
+  hbjsfont.setScale 1000, 1000
+  return { font_blob, blob, face, hbjsfont, }
+
+
+
+#===========================================================================================================
+# ARRANGE
+#-----------------------------------------------------------------------------------------------------------
+@add_missing_outlines = ( me ) ->
+  HBJS               ?= await require harfbuzzjs_path
+  me.cache.hbjs      ?= @_hbjs_cache_from_path HBJS, me.path
+  { hbjs }            = me.cache
+  { features }        = me
+  me.outlines        ?= {}
+  #.........................................................................................................
+  # cursor_x  = 0
+  # cursor_y  = 0
+  R         = {}
+  for glyph in me.arrangement
+    gid       = glyph.g
+    # delta_x   = glyph.ax
+    # dx        = glyph.dx
+    # dy        = glyph.dy
+    svg_path  = hbjs.hbjsfont.glyphToPath gid
+    debug '^3234234^', ( CND.lime gid ), ( CND.steel ( rpr svg_path )[ .. 100 ] )
+    # R.push svg_path
+    # # You need to supply this bit
+    # drawAGlyph(svg_path, cursor_x + dx, dy)
+    # cursor_x += delta_x
+  #.........................................................................................................
+  return null
+
+
+#===========================================================================================================
+# ARRANGE
+#-----------------------------------------------------------------------------------------------------------
+### TAINT add styling, font features ###
+@arrange_text = ( me, text ) ->
+  HBJS               ?= await require harfbuzzjs_path
+  me.cache.hbjs      ?= @_hbjs_cache_from_path HBJS, me.path
+  { hbjs }            = me.cache
+  { features }        = me
+  #.........................................................................................................
+  ### TAINT can we keep existing buffer for new text? ###
+  hbjs.buffer = HBJS.createBuffer()
+  hbjs.buffer.addText text
+  hbjs.buffer.guessSegmentProperties()
+  HBJS.shape hbjs.hbjsfont, hbjs.buffer, features
+  ### NOTE may change to arrangements as list ###
+  me.arrangement = hbjs.buffer.json hbjs.hbjsfont
+  # demo_outline filename, hbjs.hbjsfont, arrangement
+  #.........................................................................................................
+  return null
+
 
 #===========================================================================================================
 # HIGH-LEVEL API
 #-----------------------------------------------------------------------------------------------------------
-@shape_text = ( cfg ) ->
-  arrangement           = await @arrange_text cfg
-  cfg                   = { cfg..., arrangement, }
-  outlines              = await @fetch_outlines_fast cfg
-  return { arrangement, outlines, }
+@new_fontshaper = ( path, features = null ) ->
+  R = { @types.defaults.hb_cfg..., path, features, cache: {}, }
+  validate.hb_fontshaper R
+  return R
+
+#-----------------------------------------------------------------------------------------------------------
+@destruct = ( me ) ->
+  me.cache.hbjs?.buffer?.destroy()
+  me.cache.hbjs?.hbjsfont?.destroy()
+  me.cache.hbjs?.face?.destroy()
+  me.cache.hbjs?.blob?.destroy()
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@shape_text = ( me, text ) ->
+  @types.validate.hb_fontshaper me
+  return @fast_shape_text me, text
+
+#-----------------------------------------------------------------------------------------------------------
+@fast_shape_text = ( me, text ) ->
+  await @arrange_text         me, text
+  await @add_missing_outlines me
+  return null
 
 
-
-############################################################################################################
-if module is require.main then do =>
-  HB            = await require '../../../3rd-party-repos/harfbuzzjs'
+#===========================================================================================================
+# DEMO SHAPE TEXT
+#-----------------------------------------------------------------------------------------------------------
+@demo_shape_text = ->
+  HB            = @
   # result.instance.exports.memory.grow(400); // each page is 64kb in size
   resolve_path  = ( path ) -> PATH.resolve PATH.join __dirname, '../fonts', path
-  # text          = 'Just Text.做過很多'
+  features      = { liga: true, clig: true, dlig: true, hlig: true, }
   text          = 'abcdefABCDEF'
   paths         = [
     # 'unifraktur/UnifrakturMaguntia16.ttf'
@@ -115,9 +197,25 @@ if module is require.main then do =>
     # 'EBGaramondSC08-Regular.otf'
     # 'EBGaramondSC12-Regular.otf'
     ]
+  #.........................................................................................................
   for path in paths
-    for d in demo_text_shape ( resolve_path path ), text
-      null
-      # urge d
+    debug '^33443^', path
+    try
+      path                  = resolve_path path
+      fs                    = HB.new_fontshaper path, features
+      await HB.shape_text fs, text
+      for d in fs.arrangement
+        urge d
+    finally
+      # debug '^333322^', fs
+      HB.destruct fs
+  #.........................................................................................................
   return null
+
+
+
+############################################################################################################
+if module is require.main then do =>
+  await @demo_shape_text()
+
 
