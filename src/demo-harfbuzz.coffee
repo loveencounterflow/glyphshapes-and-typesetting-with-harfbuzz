@@ -29,41 +29,11 @@ DATOM                     = require 'datom'
 { new_datom
   freeze    }             = DATOM.export()
 { spawn }                 = require 'child_process'
-types                     = new ( require 'intertype' ).Intertype()
+@types                    = require './types'
 { isa
-  validate }              = types.export()
+  validate }              = @types.export()
 
 
-
-#===========================================================================================================
-# CFG, TYPES
-#-----------------------------------------------------------------------------------------------------------
-defaults =
-  internal:
-    verbose: false
-    harfbuzz:
-      semver: '^2.7.4'
-  hb_cfg:
-    font:
-      path:         null
-      features:     null
-    text:         null
-    arrangement:  null
-
-#-----------------------------------------------------------------------------------------------------------
-types.declare 'hb_cfg', tests:
-  "x is an object":                 ( x ) -> @isa.object          x
-  "x.text is a text":               ( x ) -> @isa.text            x.text
-  "x.font is a hb_font":            ( x ) -> @isa.hb_font         x.font
-  "x.arrangement is an optional list of objects": ( x ) ->
-    return true unless x.arrangement?
-    return @isa_list_of.object x.arrangement
-
-#-----------------------------------------------------------------------------------------------------------
-types.declare 'hb_font', tests:
-  "x is an object":                 ( x ) -> @isa.object          x
-  "x.path is a nonempty_text":      ( x ) -> @isa.nonempty_text   x.path
-  "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
 
 
 #===========================================================================================================
@@ -83,7 +53,7 @@ types.declare 'hb_font', tests:
     'hb-view' ]
   #.........................................................................................................
   for cmd in cmds
-    output = SHELL.exec "#{cmd} --version", { silent: ( not defaults.internal.verbose ), }
+    output = SHELL.exec "#{cmd} --version", { silent: ( not @types.defaults.internal.verbose ), }
     #.......................................................................................................
     unless output.code is 0
       @_show_shell_output output
@@ -94,11 +64,11 @@ types.declare 'hb_font', tests:
       @_show_shell_output output
       throw new Error "^demo-harfbuzz@103^ ensure that harfbuzz is available on the path (recommendation: `homebrew install harfbuzz` on Linux, Mac)"
     #.......................................................................................................
-    unless SEMVER.satisfies match.groups.version, defaults.internal.harfbuzz.semver
+    unless SEMVER.satisfies match.groups.version, @types.defaults.internal.harfbuzz.semver
       @_show_shell_output output
-      throw new Error "^demo-harfbuzz@104^ found HarfBuzz #{rpr cmd} version #{rpr match.groups.version}, expected #{rpr defaults.internal.harfbuzz.semver}"
+      throw new Error "^demo-harfbuzz@104^ found HarfBuzz #{rpr cmd} version #{rpr match.groups.version}, expected #{rpr @types.defaults.internal.harfbuzz.semver}"
     #.......................................................................................................
-    whisper "^33787^ #{cmd} version #{match.groups.version} OK" if defaults.internal.verbose
+    whisper "^33787^ #{cmd} version #{match.groups.version} OK" if @types.defaults.internal.verbose
   #.........................................................................................................
   return null
 
@@ -206,7 +176,7 @@ types.declare 'hb_font', tests:
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT add styling, font features ###
 @arrange_text = ( cfg ) -> new Promise ( resolve, reject ) =>
-  cfg      = { defaults.hb_cfg..., cfg..., }
+  cfg      = { @types.defaults.hb_cfg..., cfg..., }
   validate.hb_cfg cfg
   { text
     font      } = cfg
@@ -232,11 +202,11 @@ types.declare 'hb_font', tests:
   pipeline.push source
   pipeline.push SP.$split_channels()
   pipeline.push SP.$select '^stderr', ( d ) -> reject new Error d.$value
-  ( pipeline.push $watch ( d ) => whisper '^33344^', d ) if defaults.internal.verbose
+  ( pipeline.push $watch ( d ) => whisper '^33344^', d ) if @types.defaults.internal.verbose
   pipeline.push @$extract_hbshape_positioning cfg
-  ( pipeline.push @$show_positionings           cfg ) if defaults.internal.verbose
-  pipeline.push $drain ( R ) ->
-    urge "arrange_text finished" if defaults.internal.verbose
+  ( pipeline.push @$show_positionings           cfg ) if @types.defaults.internal.verbose
+  pipeline.push $drain ( R ) =>
+    urge "arrange_text finished" if @types.defaults.internal.verbose
     resolve R.flat Infinity
   SP.pull pipeline...
   #.........................................................................................................
@@ -273,7 +243,7 @@ types.declare 'hb_font', tests:
 
 #-----------------------------------------------------------------------------------------------------------
 @fetch_outlines = ( cfg ) ->
-  cfg      = { defaults.hb_cfg..., cfg..., }
+  cfg      = { @types.defaults.hb_cfg..., cfg..., }
   validate.hb_cfg cfg
   return @fetch_outlines_fast cfg
 
@@ -301,11 +271,11 @@ types.declare 'hb_font', tests:
   pipeline.push SP.$split_channels()
   pipeline.push SP.$select '^stderr', ( d ) -> reject new Error d.$value
   pipeline.push @$convert_shape_datoms      cfg
-  ( pipeline.push @$show_usage_counts         cfg ) if defaults.internal.verbose
+  ( pipeline.push @$show_usage_counts         cfg ) if @types.defaults.internal.verbose
   pipeline.push @$consolidate_shape_datoms  cfg
-  ( pipeline.push $show() ) if defaults.internal.verbose
-  pipeline.push $drain ( R ) ->
-    urge "fetch_outlines finished" if defaults.internal.verbose
+  ( pipeline.push $show() ) if @types.defaults.internal.verbose
+  pipeline.push $drain ( R ) =>
+    urge "fetch_outlines finished" if @types.defaults.internal.verbose
     resolve R[ 0 ]
   SP.pull pipeline...
   #.........................................................................................................
