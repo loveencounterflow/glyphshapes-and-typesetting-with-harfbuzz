@@ -5,7 +5,7 @@ dependencies:
   intertype: 7.6.3
   semver: 7.3.4
   shelljs: 0.8.4
-  steampipes: 6.6.0
+  steampipes: 6.7.0
 lockfileVersion: 5.2
 packages:
   /@uppy/fs-tail-stream/1.2.0:
@@ -212,7 +212,7 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-7gk3UZ9kOfPLIAbslLzyWeGiEqx9e3rxwZM0KE6EL8GlGwjym9Mrlx5/p33bWTu9YG6vcS4MBxYZDHYr5lr8BQ==
-  /steampipes/6.6.0:
+  /steampipes/6.7.0:
     dependencies:
       '@uppy/fs-tail-stream': 1.2.0
       cnd: 9.2.1
@@ -224,7 +224,7 @@ packages:
       timsort: 0.3.0
     dev: false
     resolution:
-      integrity: sha512-b1W7zDJ+sZPjI0+qxakPbLLuLlYByb/+HWPPmdAgNxsCz0H4RSHvFXLKhUKe6IsliJDMpy4ynjxzjyznUSDk/w==
+      integrity: sha512-iWxR/ilKvS6OO6wk94fOc5FqOxq2VWO86ZLRbO/HmV0MGAl2qI6DlZj+kjLd+1wxCndbpPnEu1ckFO4WjuPK2w==
   /timsort/0.3.0:
     dev: false
     resolution:
@@ -244,4 +244,4 @@ specifiers:
   intertype: ^7.6.3
   semver: ^7.3.4
   shelljs: ^0.8.4
-  steampipes: ^6.6.0
+  steampipes: 6.7.0

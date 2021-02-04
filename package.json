@@ -19,6 +19,6 @@
     "intertype": "^7.6.3",
     "semver": "^7.3.4",
     "shelljs": "^0.8.4",
-    "steampipes": "^6.6.0"
+    "steampipes": "6.7.0"
   }
 }
