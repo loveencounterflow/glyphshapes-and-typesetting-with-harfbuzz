@@ -24,18 +24,20 @@ intertype                 = new Intertype module.exports
 # TYPES
 #-----------------------------------------------------------------------------------------------------------
 @declare 'hb_cfg', tests:
-  "x is an object":                 ( x ) -> @isa.object          x
-  "x.text is a text":               ( x ) -> @isa.text            x.text
-  "x.font is a hb_font":            ( x ) -> @isa.hb_font         x.font
-  "x.arrangement is an optional list of objects": ( x ) ->
+  "x is an object":                                 ( x ) -> @isa.object          x
+  "x.text is a text":                               ( x ) -> @isa.text            x.text
+  "x.font is a hb_font":                            ( x ) -> @isa.hb_font         x.font
+  "x.arrangement? is an optional list of objects":  ( x ) ->
     return true unless x.arrangement?
     return @isa_list_of.object x.arrangement
 
 #-----------------------------------------------------------------------------------------------------------
 @declare 'hb_font', tests:
-  "x is an object":                 ( x ) -> @isa.object          x
-  "x.path is a nonempty_text":      ( x ) -> @isa.nonempty_text   x.path
-  "x.features is an optional text": ( x ) -> @isa_optional.text   x.features
+  "x is an object":                                 ( x ) -> @isa.object          x
+  "x.path is a nonempty_text":                      ( x ) -> @isa.nonempty_text   x.path
+  "x.features? is an optional text or object":      ( x ) ->
+    return true unless x.features?
+    return @type_of x.features in [ 'text', 'object', ]
 
 
 #===========================================================================================================

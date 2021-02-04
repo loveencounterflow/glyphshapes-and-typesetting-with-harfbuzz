@@ -31,7 +31,8 @@ DATOM                     = require 'datom'
 { spawn }                 = require 'child_process'
 @types                    = require './types'
 { isa
-  validate }              = @types.export()
+  validate
+  type_of  }              = @types.export()
 
 
 
@@ -71,6 +72,22 @@ DATOM                     = require 'datom'
     whisper "^33787^ #{cmd} version #{match.groups.version} OK" if @types.defaults.internal.verbose
   #.........................................................................................................
   return null
+
+#===========================================================================================================
+# HELPERS
+#-----------------------------------------------------------------------------------------------------------
+@_features_as_text = ( features ) ->
+  ### Turn feature object like `{ liga: true, clig: true, dlig: true, hlig: true, }` into feature strings
+  like `'liga,clig,dlig,hlig'` ###
+  return features if isa.text features
+  R = []
+  for feature, value of features
+    R.push switch ( type = type_of value )
+      when 'boolean'  then if value is true then feature else "#{feature}=false"
+      when 'text'     then if value is ''   then feature else "#{feature}=#{value}"
+      when 'number'   then "#{feature}=#{value}"
+      else throw new Error "^demo-harfbuzz@104^ unable to convert a #{type} into a feature string"
+  return R.join ','
 
 
 #===========================================================================================================
@@ -176,7 +193,7 @@ DATOM                     = require 'datom'
 #-----------------------------------------------------------------------------------------------------------
 ### TAINT add styling, font features ###
 @arrange_text = ( cfg ) -> new Promise ( resolve, reject ) =>
-  cfg      = { @types.defaults.hb_cfg..., cfg..., }
+  cfg           = { @types.defaults.hb_cfg..., cfg..., }
   validate.hb_cfg cfg
   { text
     font      } = cfg
@@ -184,10 +201,11 @@ DATOM                     = require 'datom'
     features }  = font
   #.........................................................................................................
   ### TAINT code duplication ###
+  ### TAINT cache parameters, esp. features ###
   parameters    = []
   parameters.push '--output-format=json'
   parameters.push '--font-size=1000'
-  parameters.push "--features=#{font.features}" if font.features?
+  parameters.push "--features=#{@_features_as_text font.features}" if font.features?
     # '--no-glyph-names' ### NOTE when active, output glyf IDs instead of glyph names ###
     # '--show-extents'
     # '--show-flags'
@@ -227,19 +245,6 @@ DATOM                     = require 'datom'
     return null unless d.$key is '^use'
     count++
     return null
-
-# #-----------------------------------------------------------------------------------------------------------
-# @$show_svg = ( cfg ) ->
-#   last      = Symbol 'last'
-#   collector = []
-#   #.........................................................................................................
-#   return $watch { last, }, ( d ) ->
-#     if d is last
-#       urge '\n' + collector.join '\n'
-#       return null
-#     return null unless d.$key is '^stdout'
-#     return null unless ( value = d.$value )?
-#     collector.push value
 
 #-----------------------------------------------------------------------------------------------------------
 @fetch_outlines = ( cfg ) ->
@@ -300,7 +305,7 @@ DATOM                     = require 'datom'
   HB.ensure_harfbuzz_version()
   font                  =
     path:                 'EBGaramond12-Italic.otf'
-    features:             'liga,clig,dlig,hlig'
+    features:             { liga: true, clig: true, dlig: true, hlig: true, }
   font.path             = PATH.resolve PATH.join __dirname, '../fonts', font.path
   # text                  = "A glyph ffi shaping\nagffix谷"
   # text                  = "A abc\nabc ffl ffi ct 谷 Z"
