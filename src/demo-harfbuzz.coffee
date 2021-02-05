@@ -107,7 +107,7 @@ DATOM                     = require 'datom'
   symid         = null
   path_start    = '<path style="stroke:none;" d="'
   path_end      = ' "/>'
-  use_pattern   = /^\s*<use xlink:href="#(?<symid>[^"]+)" x="(?<dx>[^"]+)" y="(?<dy>[^"]+)"\/>/
+  use_pattern   = /^<use xlink:href="#(?<symid>[^"]+)" x="(?<dx>[^"]+)" y="(?<dy>[^"]+)"\/>/
   use_idx       = -1
   #.........................................................................................................
   return $ ( d, send ) ->
@@ -128,10 +128,21 @@ DATOM                     = require 'datom'
       ### TAINT validate that symid was found ###
       symid = value.replace /^.*\sid="([^"]+)".*$/, '$1'
       return null
+    # #.......................................................................................................
+    # if value.startsWith '<clipPath '
+    #   ### NOTE only occurs on very long lines ###
+    #   ### TAINT can we indeed ignore it? ###
+    #   return null
     #.......................................................................................................
     if value is '<path style="stroke:none;" d=""/>'
       send new_datom '^glyfpath', { symid, glyfpath: '', glyfname: 'space', }
       return null
+    #.......................................................................................................
+    value = value.trimLeft()
+    # #.......................................................................................................
+    # if value.startsWith '<path d='
+    #   debug '^33334^', value
+    #   return null
     #.......................................................................................................
     if ( value.startsWith path_start ) and ( value.endsWith path_end )
       glyfpath = value[ path_start.length ... value.length - path_end.length ]
