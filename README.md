@@ -21,6 +21,9 @@
 - [HarfBuzzJS](#harfbuzzjs)
 - [OpenType Glyf Names and SVG Element IDs](#opentype-glyf-names-and-svg-element-ids)
 - [Links](#links)
+- [Skia Canvas](#skia-canvas)
+- [RazrFalcon `ttf-parser`](#razrfalcon-ttf-parser)
+- [RazrFalcon RustyBuzz](#razrfalcon-rustybuzz)
 - [Tests and Benchmarks](#tests-and-benchmarks)
 - [To Do](#to-do)
 
@@ -259,8 +262,91 @@ validation will be needed either**.
   2017](https://www.youtube.com/watch?v=Is4PW6f4Pk4)
 * Language bindings:
   * https://github.com/rougier/freetype-py
-  * https://github.com/RazrFalcon/rustybuzz, A complete harfbuzz's shaping algorithm port to Rust
   * https://github.com/foliojs/fontkit, An advanced font engine for Node and the browser
+  * https://docs.rs/harfbuzz-sys/0.5.0/harfbuzz_sys/, https://github.com/servo/rust-harfbuzz, Rust bindings
+    to the Harfbuzz text shaping engine
+  * https://github.com/Brooooooklyn/skia-rs/issues/156 Skia does some kind of text shaping with ?HarfBuzz?
+    but `skia-rs` is not there, yet (Feb 2021)
+
+## Skia Canvas
+
+* https://github.com/samizdatco/skia-canvas#fontlibrary (also see https://github.com/Automattic/node-canvas
+  which is based on Cairo; cf. https://www.skypack.dev/search?q=skia for options for running Skia in NodeJS)
+
+> Skia Canvas is a browser-less implementation of the HTML Canvas drawing API for Node.js. It is based on
+> Google’s [Skia](https://skia.org) graphics engine and as a result produces very similar results to
+> Chrome’s `<canvas>` element.
+>
+> While the primary goal of this project is to provide a reliable emulation of the [standard
+> API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) according to the
+> [spec](https://html.spec.whatwg.org/multipage/canvas.html), it also extends it in a number of areas that
+> are more relevant to the generation of static graphics files rather than ‘live’ display in a browser.
+>
+> In particular, Skia Canvas:
+>
+>   - is fast and compact since all the heavy lifting is done by native code written in Rust and C++
+>   - can generate output in both raster (JPEG & PNG) and vector (PDF & SVG) image formats
+>   - can save images to [files](#saveasfilename-format-quality), return them as
+>     [Buffers](#tobufferformat-quality-page), or encode [dataURL](#todataurlformat-quality-page) strings
+>   - can create [multiple ‘pages’](#newpagewidth-height) on a given canvas and then
+>     [output](#saveasfilename-format-quality) them as a single, multi-page PDF or an image-sequence saved
+>     to multiple files
+>   - fully supports the [CSS filter effects][filter] image processing operators
+>   - offers rich typographic control including:
+>
+>     - multi-line, [word-wrapped](#textwrap) text
+>     - line-by-line [text metrics](#measuretextstr-width)
+>     - small-caps, ligatures, and other opentype features accessible using standard
+>       [font-variant](#fontvariant) syntax
+>     - proportional letter-spacing (a.k.a. [‘tracking’](#texttracking)) and leading
+>     - support for [variable fonts][VariableFonts] and transparent mapping of weight values
+>     - use of non-system fonts [loaded](#usefamilyname-fontpaths) from local files
+
+## RazrFalcon `ttf-parser`
+
+`ttf-parser` is a high-level, safe, zero-allocation TrueType font parser written in Rust.
+
+* https://github.com/RazrFalcon/ttf-parser
+* <strike>does it open `*.otf` files?</strike> `ttf-parser` does parse OTFs
+* <strike>does it output SVG paths? Maybe, see
+  https://github.com/RazrFalcon/ttf-parser/blob/master/examples/font2svg.rs</strike> It can output SVG
+  paths, see below
+
+```sh
+git clone https://github.com/RazrFalcon/ttf-parser
+cd ttf-parser
+cargo build
+cargo build --examples
+
+target/debug/examples/font-info path/to/fonts/Ubuntu-R.ttf
+target/debug/examples/font2svg path/to/fonts/Ubuntu-R.ttf Ubuntu-R.ttf.svg
+```
+
+* might want to patch `examples/font2svg.rs` (and recompile with `cargo build --examples`):
+
+```rust
+use std::path::PathBuf;
+use std::io::Write;
+
+use ttf_parser as ttf;
+use svgtypes::WriteBuffer;
+
+// was: const FONT_SIZE: f64 = 128.0;
+const FONT_SIZE: f64 = 1000.0;
+// was: const COLUMNS: u32 = 100;
+const COLUMNS: u32 = 16;
+```
+
+## RazrFalcon RustyBuzz
+
+* https://github.com/RazrFalcon/rustybuzz, A complete harfbuzz's shaping algorithm port to Rust
+
+```sh
+git clone https://github.com/RazrFalcon/rustybuzz
+cd rustybuzz
+cargo build --examples
+target/debug/examples/shape path/to/font.otf 'some text'
+```
 
 ## Tests and Benchmarks
 
@@ -275,6 +361,7 @@ validation will be needed either**.
     * see https://github.com/harfbuzz/harfbuzzjs/issues/10
   * [opentype.js](https://github.com/opentypejs/opentype.js)
   * [Fontkit](https://github.com/foliojs/fontkit)
+  * [rustybuzz](https://github.com/razrfalcon/rustybuzz)
   * (future): generate interface to HarfBuzz using [`ffi-napi`](https://github.com/node-ffi-napi/node-ffi-napi)
     and call into C libraries from JS.—Also see
     * https://www.sysleaf.com/nodejs-ffi/
