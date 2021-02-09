@@ -25,17 +25,19 @@ FK                        = require 'fontkit'
 
 
 #-----------------------------------------------------------------------------------------------------------
-@otfont_from_path = ( path ) -> await OTJS.load path
+@fkfont_from_path = ( path ) -> FK.openSync path ### could use async ###
 
 #-----------------------------------------------------------------------------------------------------------
-@shape_text = ( otfont, text ) ->
+@shape_text = ( fkfont, text ) ->
   R = {}
-  for glyph in otfont.stringToGlyphs text
-    continue if R[ glyph.index ]?
-    path              = glyph.getPath 0, 0, 1000
-    svg_pathdata      = path.toPathData 2
-    R[ glyph.index ]  = svg_pathdata
-  return R
+  glyfrun = fkfont.layout text
+  if fkfont.unitsPerEm is 1000
+    for glyf in glyfrun.glyphs
+      R[ glyf.id ] = glyf.path.toSVG()
+  else
+    for glyf in glyfrun.glyphs
+      R[ glyf.id ] = ( glyf.getScaledPath 1000 ).toSVG()
+  return null
 
 
 #===========================================================================================================
@@ -44,16 +46,29 @@ FK                        = require 'fontkit'
 @demo_shape_text = ->
   resolve_path  = ( path ) -> PATH.resolve PATH.join __dirname, '../fonts', path
   features      = { liga: true, clig: true, dlig: true, hlig: true, }
-  path          = 'EBGaramond08-Italic.otf'
+  # path          = 'EBGaramond08-Italic.otf'
+  path          = 'FZKaiT.TTF'
   path          = resolve_path path
-  otfont        = await OTJS.load path
-  for d in ( otfont.getPath 'a', 0, 150, 72 ).commands
-    debug d
-  for glyph in otfont.stringToGlyphs 'xffix'
-    help glyph
-    path = glyph.getPath 0, 0, 1000
-    urge path.toPathData 2
-  debug @shape_text otfont, 'xffix'
+  # open a font synchronously
+  fkfont        = FK.openSync path
+  whisper fkfont.availableFeatures
+  whisper fkfont.variationAxes
+  whisper fkfont.unitsPerEm
+  scale_factor = 1000 / fkfont.unitsPerEm
+  # layout a string, using default shaping features.
+  # returns a GlyphRun, describing glyphs and positions.
+  glyfrun       = fkfont.layout 'xffix', features
+  # get an SVG path for a glyph
+  urge ( k for k of glyfrun )
+  for glyf in glyfrun.glyphs
+    # font.widthOfGlyph glyf.id
+    # info ( k for k of glyf )
+    info ( CND.yellow glyf.id ), CND.steel glyf.path.toSVG()[ .. 100 ]
+    info glyf.bbox
+    info glyf.advanceWidth
+    info glyf.advanceWidth * scale_factor
+    ### should use this method unless `fkfont.unitsPerEm` is 1000: ###
+    urge ( glyf.getScaledPath 1000 ).toSVG()
   return null
 
 
@@ -63,15 +78,5 @@ if module is require.main then do =>
   await @demo_shape_text()
 
 
-
-// open a font synchronously
-var font = fontkit.openSync('font.ttf');
-
-// layout a string, using default shaping features.
-// returns a GlyphRun, describing glyphs and positions.
-var run = font.layout('hello world!');
-
-// get an SVG path for a glyph
-var svg = run.glyphs[0].path.toSVG();
 
 
