@@ -29,15 +29,20 @@ FK                        = require 'fontkit'
 
 #-----------------------------------------------------------------------------------------------------------
 @shape_text = ( fkfont, text ) ->
-  R = {}
+  R       = []
   glyfrun = fkfont.layout text
-  if fkfont.unitsPerEm is 1000
-    for glyf in glyfrun.glyphs
-      R[ glyf.id ] = glyf.path.toSVG()
-  else
-    for glyf in glyfrun.glyphs
-      R[ glyf.id ] = ( glyf.getScaledPath 1000 ).toSVG()
-  return null
+  ### NOTE do outlining in separate method ###
+  # if fkfont.unitsPerEm is 1000
+  #   for glyf in glyfrun.glyphs
+  #     R[ glyf.id ] = glyf.path.toSVG()
+  # else
+  #   for glyf in glyfrun.glyphs
+  #     R[ glyf.id ] = ( glyf.getScaledPath 1000 ).toSVG()
+  for position, pidx in glyfrun.positions
+    gid                                       = glyfrun.glyphs[ pidx ].id
+    { xAdvance, yAdvance, xOffset, yOffset, } = position
+    R.push { gid, xAdvance, yAdvance, xOffset, yOffset, }
+  return R
 
 
 #===========================================================================================================
