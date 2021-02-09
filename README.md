@@ -109,6 +109,8 @@ libftgl2
   **NOTE** `pdf-lib` can draw SVG paths to PDF, so...
 
 * [`fonteditor-core`](https://github.com/kekee000/fonteditor-core)
+  * **NOTE** **fonteditor-core does not lend itself for typesetting b/c it lacks text shaping abilities**
+  * **NOTE** **Also, fails to load EBGaramond08-Italic which other solutions do load**
   * sfnt parse
   * read, write, transform fonts
     * ttf (read and write)
