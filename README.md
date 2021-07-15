@@ -146,7 +146,7 @@ Fortunately, there other options, for which see below.
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> /home/flow/.zshenv
+echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> ~/.zshenv
 eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 brew install gcc
 brew install harfbuzz
@@ -384,3 +384,38 @@ target/debug/examples/shape path/to/font.otf 'some text'
 
 
 
+<!--
+
+~/temp/harfbuzz-links.txt
+~/.cache/Homebrew/harfbuzz--2.8.1
+~/.cache/ms-playwright/webkit-1219/minibrowser-gtk/libharfbuzz.so.0
+~/.pnpm-store/v3/github.com/nasser/node-harfbuzz@7ef478a9545442ad5fce9add7290c40565160cf8
+~/.pnpm-store/v3/github.com/nasser/node-harfbuzz@7ef478a9545442ad5fce9add7290c40565160cf8/integrity.json
+~/.pnpm-store/v3/metadata/registry.npmjs.org/harfbuzzjs.json
+~/jzr/ucdb/public/opentypejs-harfbuzz-svg
+~/jzr/ucdb/public/opentypejs-harfbuzz-svg/sample-svg.html
+~/jzr/ucdb/public/opentypejs-harfbuzz-svg/sample-glyph.svg
+~/jzr/ucdb/public/opentypejs-harfbuzz-svg/sample-font.svg
+~/jzr/ucdb/lib/experiments/write-opentypejs-outlines-svg-with-harfbuzz-metrics.js.map
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz
+~/jzr/interplot/src/experiments/harfbuzzjs-fontmetrics.coffee
+~/jzr/interplot/lib/experiments/harfbuzzjs-fontmetrics.js
+~/jzr/interplot/lib/experiments/harfbuzzjs-fontmetrics.js.map
+~/jzr/rustybuzz-wasm
+~/jzr/hengist/apps/glyphshapes-and-typesetting-with-harfbuzz
+~/jzr/hengist/apps/rustybuzz-wasm
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/main.tests.coffee
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/rustybuzz-wasm-text-shaping-call-arities.benchmarks.coffee
+~/jzr/intershop-intertext/intershop_modules/myharfbuzz.py
+~/jzr/intershop-intertext/db/tests/100-harfbuzz.tests.sql
+~/jzr/intershop-intertext/db/100-harfbuzz.sql
+~/3rd-party-repos/rustybuzz
+~/3rd-party-repos/harfbuzz
+~/3rd-party-repos/harfbuzzjs
+~/3rd-party-repos/ttf-parser/testing-tools/font-view/harfbuzzfont.cpp
+
+->
