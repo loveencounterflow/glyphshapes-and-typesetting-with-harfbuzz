@@ -140,10 +140,13 @@ __demo_text_shape = ( path, text ) ->
   ### NOTE may change to arrangements as list ###
   me.arrangement = hbjs.buffer.json hbjs.hbjsfont
   #.........................................................................................................
-  for glyph in me.arrangement
-    me.outlines[ glyph.g ] ?= hbjs.hbjsfont.glyphToPath glyph.g
+  ### TAINT make outlining a matter of configuration ###
+  if false
+    for glyph in me.arrangement
+      me.outlines[ glyph.g ] ?= hbjs.hbjsfont.glyphToPath glyph.g
   #.........................................................................................................
-  return null
+  ### TAINT return only arrangement for the sake of benchmarking ###
+  return me.arrangement
 
 
 #===========================================================================================================
