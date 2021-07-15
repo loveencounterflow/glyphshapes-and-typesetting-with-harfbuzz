@@ -306,7 +306,9 @@ DATOM                     = require 'datom'
 @shape_text = ( cfg ) ->
   arrangement           = await @arrange_text cfg
   cfg                   = { cfg..., arrangement, }
-  outlines              = await @fetch_outlines_fast cfg
+  ### TAINT forego outlining for the sake of benchmarking ###
+  # outlines              = await @fetch_outlines_fast cfg
+  outlines              = null
   return { arrangement, outlines, }
 
 
