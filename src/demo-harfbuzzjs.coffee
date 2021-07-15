@@ -21,7 +21,8 @@ PATH                      = require 'path'
 { isa
   validate }              = @types.export()
 HBJS                        = null
-harfbuzzjs_path           = '../../../3rd-party-repos/harfbuzzjs'
+# harfbuzzjs_path           = '../../../3rd-party-repos/harfbuzzjs'
+harfbuzzjs_path           = 'harfbuzzjs'
 
 warn CND.reverse "harfbuzzjs doesn't support font features"
 
