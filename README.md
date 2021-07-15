@@ -379,6 +379,8 @@ target/debug/examples/shape path/to/font.otf 'some text'
 
 * [ ] discuss OT font faces, adapt discussion of 'one font per file' policy
 * [ ] discuss HarfBuzz switch `--variations` vs switch `--features`
+* [ ] <strike>add https://github.com/nasser/node-harfbuzz to benchmarks</strike> (compilation on Linux Mint
+  fails although `libharfbuzz-dev` v1.7.2 is installed)
 
 
 
