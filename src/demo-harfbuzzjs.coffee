@@ -173,9 +173,8 @@ __demo_text_shape = ( path, text ) ->
 
 #-----------------------------------------------------------------------------------------------------------
 @fast_shape_text = ( me, text ) ->
-  await @arrange_text         me, text
+  return await @arrange_text me, text
   # await @add_missing_outlines me
-  return null
 
 
 #===========================================================================================================
