@@ -418,4 +418,68 @@ target/debug/examples/shape path/to/font.otf 'some text'
 ~/3rd-party-repos/harfbuzzjs
 ~/3rd-party-repos/ttf-parser/testing-tools/font-view/harfbuzzfont.cpp
 
-->
+-->
+
+<!--
+
+Any API method of rustybuzz-wasm:
+
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-fonteditorcore.coffee:36:@shape_text = ( fkfont, text ) ->
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-fontkit.coffee:31:@shape_text = ( fkfont, text ) ->
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-harfbuzz.coffee:306:@shape_text = ( cfg ) ->
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-harfbuzz.coffee:351:  # help await @shape_text { font: { path: '~/jzr/glyphshapes-and-typesetting-with-harfbuzz/fonts/EBGaramond12-Italic.otf', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-harfbuzz.coffee:352:  # help await @shape_text { font: { path: 'nosuchfile', features: 'liga,clig,dlig,hlig' }, text: 'AxZ' }
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-harfbuzzjs.coffee:170:@shape_text = ( me, text ) ->
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-harfbuzzjs.coffee:214:      await HB.shape_text fs, text
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-opentypejs.coffee:32:@shape_text = ( otfont, text ) ->
+~/jzr/glyphshapes-and-typesetting-with-harfbuzz/src/demo-opentypejs.coffee:56:  debug @shape_text otfont, 'xffix'
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:104:#   result          = RBW.register_font font.idx, font_bytes_hex
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:130:  T.ok isa.function RBW.register_font
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:131:  T.ok isa.function RBW.font_register_is_free
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:132:  T.ok isa.function RBW.shape_text
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:133:  T.ok isa.function RBW.glyph_to_svg_pathdata
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:134:  T.ok isa.function RBW.wrap_text_with_arbitrary_slabs
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:135:  T.ok isa.function RBW.find_line_break_positions
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:146:  # test @[ "RBW.register_font(), RBW.font_register_is_free()" ]
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:147:  # test @[ "RBW.shape_text()" ]
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:30:@[ "HB.shape_text() fails on nonexisting font file" ] = ( T, done ) ->
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:39:      d = HB.shape_text probe
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:46:@[ "RBW.register_font(), RBW.font_register_is_free()" ] = ( T, done ) ->
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:54:  do register_font = =>
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:57:    result          = RBW.register_font font.idx, font_bytes_hex
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:63:    result          = ( ( RBW.font_register_is_free idx ) for idx in [ font.idx - 1 .. font.idx + 1 ] )
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:72:@[ "RBW.shape_text()" ] = ( T, done ) ->
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:82:  do register_font = =>
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:85:    RBW.register_font font.idx, font_bytes_hex
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:89:    result          = RBW.shape_text { format, text, font_idx: font.idx, }
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/basics.test.coffee:97:# @[ "RBW.register_font()" ] = ( T, done ) ->
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/rustybuzz-wasm-text-shaping-call-arities.benchmarks.coffee:86:  if RBW.font_register_is_free font_idx
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/rustybuzz-wasm-text-shaping-call-arities.benchmarks.coffee:90:    RBW.register_font font_idx, font_bytes_hex
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/rustybuzz-wasm-text-shaping-call-arities.benchmarks.coffee:95:      result  = RBW.shape_text { format, text, font_idx, }
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:112:      result  = FK.shape_text fkfont, text
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:127:  if RBW.font_register_is_free font_idx
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:131:    RBW.register_font font_idx, font_bytes_hex
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:138:      result  = RBW.shape_text { format, text, font_idx, }
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:63:      result  = await HB.shape_text { text, font, }
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:80:      result  = await HB.shape_text fs, text
+~/jzr/hengist/dev/glyphshapes-and-typesetting-with-harfbuzz/src/textshaping.benchmarks.coffee:96:      result  = OT.shape_text otfont, text
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:100:  font_idx            = @register_font me, fontnick
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:107:  arrangement         = JSON.parse RBW.shape_text cfg
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:129:  font_idx  = @register_font me, fontnick
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:135:  arrangement = JSON.parse RBW.shape_text cfg
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:162:    outline = JSON.parse RBW.glyph_to_svg_pathdata font_idx, gid
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:190:  slablines = JSON.parse RBW.wrap_text_with_arbitrary_slabs slabs
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:221:  arrangement = JSON.parse RBW.shape_text { font_idx, text, format, }
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:265:  font_idx      = @register_font me, fontnick
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:271:  Prepare a buffer so we access the underlying raw bytes (`RBW.find_line_break_positions()` and
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:272:  `RBW.shape_text()` both return positions into the raw bytes). Find the line break opportunities (LBOs) as
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:277:  lbo_starts    = JSON.parse RBW.find_line_break_positions text
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:304:  shapes    = JSON.parse RBW.shape_text { font_idx, text, format: 'json', }
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:338:  slablines = JSON.parse RBW.wrap_text_with_arbitrary_slabs slabs, line_width
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:54:@register_font = ( me, fontnick ) ->
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:65:  whisper "^register_font@1^ reading font #{fontnick}..."
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:67:  whisper "^register_font@2^ ...done"
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:68:  whisper "^register_font@3^ sending font #{fontnick} to registry..."
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:69:  RBW.register_font R, font_bytes
+~/jzr/rustybuzz-wasm/demo-nodejs-using-wasm/src/main.coffee:70:  whisper "^register_font@4^ ...done"
+-->
